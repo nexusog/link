@@ -1,7 +1,7 @@
 import { WorkspaceInStorage } from '../types'
 import { atomWithStorage } from 'jotai/utils'
 
-export const workspaces = atomWithStorage<WorkspaceInStorage[]>(
+export const workspacesAtom = atomWithStorage<WorkspaceInStorage[]>(
 	'workspaces',
 	[],
 )

@@ -1,3 +1,5 @@
+'use client'
+
 import {
 	Sidebar,
 	SidebarContent,
@@ -5,29 +7,18 @@ import {
 	SidebarHeader,
 } from '@/components/ui/sidebar'
 import { WorkspaceSwitcher } from './workspace-switcher'
-
-// TODO: fake data
-const data = {
-	workspaces: [
-		{
-			name: 'My Workspace',
-			id: '1234567890',
-			secret: '1234567890',
-		},
-		{
-			name: 'Other Workspace',
-			id: '234567890',
-			secret: '234567890',
-		},
-	],
-}
+import { useAtom } from 'jotai'
+import { workspacesAtom } from '@/lib/state'
+import React from 'react'
 
 export function AppSidebar() {
+	const [workspacesInStorage] = useAtom(workspacesAtom)
+
 	return (
 		<Sidebar>
 			<SidebarHeader className="px-4 py-4">
 				<h1 className="font-extrabold text-2xl text-black">Link</h1>
-				<WorkspaceSwitcher workspaces={data.workspaces} />
+				<WorkspaceSwitcher workspaces={workspacesInStorage} />
 			</SidebarHeader>
 			<SidebarContent></SidebarContent>
 			<SidebarFooter />

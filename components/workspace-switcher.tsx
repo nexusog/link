@@ -18,6 +18,7 @@ import {
 	useSidebar,
 } from '@/components/ui/sidebar'
 import { WorkspaceInStorage } from '@/lib/types'
+import { Button } from '@/components/ui/button'
 
 function WorkspaceAvatar({ workspaceName }: { workspaceName: string }) {
 	return (
@@ -30,69 +31,79 @@ function WorkspaceAvatar({ workspaceName }: { workspaceName: string }) {
 export function WorkspaceSwitcher({
 	workspaces,
 }: {
-	workspaces: (WorkspaceInStorage & {
-		name: string
-	})[]
+	workspaces: WorkspaceInStorage[]
 }) {
 	const { isMobile } = useSidebar()
-	const [activeWorkspace, setActiveWorkspace] = React.useState(workspaces[0])
+	const [activeWorkspace, setActiveWorkspace] =
+		React.useState<WorkspaceInStorage | null>(workspaces[0] || null)
 
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<SidebarMenuButton
-							size="lg"
-							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-						>
-							<WorkspaceAvatar
-								workspaceName={activeWorkspace.name}
-							/>
-
-							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="truncate font-semibold">
-									{activeWorkspace.name}
-								</span>
-								<span className="truncate text-xs">
-									{activeWorkspace.id}
-								</span>
-							</div>
-							<ChevronsUpDown className="ml-auto" />
-						</SidebarMenuButton>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent
-						className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-						align="start"
-						side={isMobile ? 'bottom' : 'right'}
-						sideOffset={4}
-					>
-						<DropdownMenuLabel className="text-xs text-muted-foreground">
-							Workspaces
-						</DropdownMenuLabel>
-						{workspaces.map((workspace) => (
-							<DropdownMenuItem
-								key={workspace.id}
-								onClick={() => setActiveWorkspace(workspace)}
-								className="gap-2 p-2"
+				{activeWorkspace ? (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<SidebarMenuButton
+								size="lg"
+								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
 								<WorkspaceAvatar
-									workspaceName={workspace.name}
+									workspaceName={activeWorkspace.name}
 								/>
-								{workspace.name}
+
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="truncate font-semibold">
+										{activeWorkspace.name}
+									</span>
+									<span className="truncate text-xs">
+										{activeWorkspace.id}
+									</span>
+								</div>
+								<ChevronsUpDown className="ml-auto" />
+							</SidebarMenuButton>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent
+							className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+							align="start"
+							side={isMobile ? 'bottom' : 'right'}
+							sideOffset={4}
+						>
+							<DropdownMenuLabel className="text-xs text-muted-foreground">
+								Workspaces
+							</DropdownMenuLabel>
+							{workspaces.map((workspace) => (
+								<DropdownMenuItem
+									key={workspace.id}
+									onClick={() =>
+										setActiveWorkspace(workspace)
+									}
+									className="gap-2 p-2"
+								>
+									<WorkspaceAvatar
+										workspaceName={workspace.name}
+									/>
+									{workspace.name}
+								</DropdownMenuItem>
+							))}
+							<DropdownMenuSeparator />
+							{/* TODO: handle logic */}
+							<DropdownMenuItem className="gap-2 p-2 items-center">
+								<div className="flex size-6 items-center justify-center rounded-md border bg-background">
+									<Plus className="size-4" />
+								</div>
+								<div className="font-medium text-muted-foreground">
+									Create Workspace
+								</div>
 							</DropdownMenuItem>
-						))}
-						<DropdownMenuSeparator />
-						<DropdownMenuItem className="gap-2 p-2 items-center">
-							<div className="flex size-6 items-center justify-center rounded-md border bg-background">
-								<Plus className="size-4" />
-							</div>
-							<div className="font-medium text-muted-foreground">
-								Create Workspace
-							</div>
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				) : (
+					// TODO: handle logic
+					<Button className="w-full">
+						<Plus />
+						Create Workspace
+					</Button>
+				)}
 			</SidebarMenuItem>
 		</SidebarMenu>
 	)
