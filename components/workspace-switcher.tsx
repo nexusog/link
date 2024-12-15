@@ -15,12 +15,15 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarSeparator,
 	useSidebar,
 } from '@/components/ui/sidebar'
-import { WorkspaceInStorage } from '@/lib/types'
 
-import { Button } from './ui/button'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import {
+	activeWorkspaceAtom,
+	activeWorkspaceIdAtom,
+	workspacesAtom,
+} from '@/lib/state'
 
 function WorkspaceAvatar({ workspaceName }: { workspaceName: string }) {
 	return (
@@ -30,19 +33,16 @@ function WorkspaceAvatar({ workspaceName }: { workspaceName: string }) {
 	)
 }
 
-export function WorkspaceSwitcher({
-	workspaces,
-}: {
-	workspaces: WorkspaceInStorage[]
-}) {
+export function WorkspaceSwitcher() {
 	const { isMobile } = useSidebar()
-	const [activeWorkspace, setActiveWorkspace] =
-		React.useState<WorkspaceInStorage | null>(workspaces[0] || null)
+	const [workspaces] = useAtom(workspacesAtom)
+	const activeWorkspace = useAtomValue(activeWorkspaceAtom)
+	const setActiveWorkspaceId = useSetAtom(activeWorkspaceIdAtom)
 
 	return (
 		<SidebarMenu className="flex flex-col gap-3 ">
 			<SidebarMenuItem>
-				{activeWorkspace ? (
+				{activeWorkspace && (
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton
@@ -77,7 +77,7 @@ export function WorkspaceSwitcher({
 								<DropdownMenuItem
 									key={workspace.id}
 									onClick={() =>
-										setActiveWorkspace(workspace)
+										setActiveWorkspaceId(workspace.id)
 									}
 									className="gap-2 p-2"
 								>
@@ -99,45 +99,7 @@ export function WorkspaceSwitcher({
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
-				) : (
-					<Button className="w-full">
-						<Plus />
-						Create Workspace
-					</Button>
 				)}
-			</SidebarMenuItem>
-			<SidebarSeparator />
-			<SidebarMenuItem>
-				<div className="flex rounded hover:shadow-sm items-center justify-center w-full h-8   bg-gray-300 text-brand-50">
-					<span className="ml-2 cursor-pointer hover:text-muted-foreground text-black font-mono">
-						first tab
-					</span>
-				</div>
-			</SidebarMenuItem>
-			<SidebarSeparator />
-			<SidebarMenuItem>
-				<div className="flex hover:shadow-sm rounded items-center justify-center w-full h-8   bg-gray-300 text-brand-50">
-					<span className="ml-2 cursor-pointer hover:text-muted-foreground text-black font-mono">
-						second tab
-					</span>
-				</div>
-			</SidebarMenuItem>
-			<SidebarSeparator />
-			<SidebarMenuItem>
-				<div className="flex hover:shadow-sm rounded items-center justify-center w-full h-8   bg-gray-300 text-brand-50">
-					<span className="ml-2 cursor-pointer hover:text-muted-foreground text-black font-mono">
-						third tab
-					</span>
-				</div>
-			</SidebarMenuItem>
-			<SidebarSeparator />
-
-			<SidebarMenuItem>
-				<div className="flex hover:shadow-sm rounded items-center justify-center w-full h-8   bg-gray-300 text-brand-50">
-					<span className="ml-2 cursor-pointer hover:text-muted-foreground text-black font-mono">
-						forth tab
-					</span>
-				</div>
 			</SidebarMenuItem>
 		</SidebarMenu>
 	)

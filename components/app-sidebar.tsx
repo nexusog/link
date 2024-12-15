@@ -5,22 +5,56 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { WorkspaceSwitcher } from './workspace-switcher'
-import { useAtom } from 'jotai'
-import { workspacesAtom } from '@/lib/state'
 import React from 'react'
+import Link from 'next/link'
+import { ChartColumnIcon, KeyIcon, LinkIcon } from 'lucide-react/'
+
+const sidebarItems = [
+	{
+		title: 'Links',
+		url: '/',
+		icon: LinkIcon,
+	},
+	{
+		title: 'Analytics',
+		url: '/analytics',
+		icon: ChartColumnIcon,
+	},
+	{
+		title: 'API Keys',
+		url: '/api-keys',
+		icon: KeyIcon,
+	},
+]
 
 export function AppSidebar() {
-	const [workspacesInStorage] = useAtom(workspacesAtom)
-
 	return (
 		<Sidebar>
 			<SidebarHeader className="px-4 py-4">
 				<h1 className="font-extrabold text-2xl text-black">Link</h1>
-				<WorkspaceSwitcher workspaces={workspacesInStorage} />
+				<WorkspaceSwitcher />
 			</SidebarHeader>
-			<SidebarContent></SidebarContent>
+			<SidebarContent>
+				<SidebarMenu className="px-2">
+					{sidebarItems.map((item) => (
+						<SidebarMenuItem key={item.title}>
+							<SidebarMenuButton asChild>
+								<Link href={item.url}>
+									<item.icon />
+									<span className="text-sm ">
+										{item.title}
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					))}
+				</SidebarMenu>
+			</SidebarContent>
 			<SidebarFooter />
 		</Sidebar>
 	)
