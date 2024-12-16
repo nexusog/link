@@ -28,7 +28,7 @@ export function LinkCard({ link }: { link: Link }) {
 				</div>
 				<div className="flex-grow flex flex-col justify-between">
 					<a
-						href={redirectUrl}
+						href={link.shortName || link.id}
 						target="_blank"
 						className="text-sm font-semibold tracking-wide hover:underline"
 					>
