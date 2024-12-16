@@ -5,7 +5,6 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
@@ -80,48 +79,42 @@ export const CreateWorkspaceCard = () => {
 	}
 
 	return (
-		<div className="w-full min-h-full flex-grow flex justify-center items-center px-2 md:p-0">
-			<Card className="w-full max-w-lg">
-				<CardHeader>
-					<CardTitle>Create Workspace</CardTitle>
-					<CardDescription>
-						Workspaces are collection of Links & API Keys
-					</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<Form {...createWorkspaceForm}>
-						<form
-							onSubmit={createWorkspaceForm.handleSubmit(
-								onSubmit,
+		<Card className="w-full max-w-lg">
+			<CardHeader>
+				<CardTitle>Create Workspace</CardTitle>
+				<CardDescription>
+					Workspaces are collection of Links & API Keys
+				</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<Form {...createWorkspaceForm}>
+					<form
+						onSubmit={createWorkspaceForm.handleSubmit(onSubmit)}
+						className="space-y-8"
+					>
+						<FormField
+							control={createWorkspaceForm.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Name</FormLabel>
+									<FormControl>
+										<Input
+											placeholder="Cool Workspace"
+											{...field}
+										/>
+									</FormControl>
+									<FormDescription>
+										This helps you identify your workspace
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
 							)}
-							className="space-y-8"
-						>
-							<FormField
-								control={createWorkspaceForm.control}
-								name="name"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Name</FormLabel>
-										<FormControl>
-											<Input
-												placeholder="Cool Workspace"
-												{...field}
-											/>
-										</FormControl>
-										<FormDescription>
-											This helps you identify your
-											workspace
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<Button type="submit">Create</Button>
-						</form>
-					</Form>
-				</CardContent>
-				<CardFooter></CardFooter>
-			</Card>
-		</div>
+						/>
+						<Button type="submit">Create</Button>
+					</form>
+				</Form>
+			</CardContent>
+		</Card>
 	)
 }

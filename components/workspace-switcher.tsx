@@ -24,6 +24,7 @@ import {
 	activeWorkspaceIdAtom,
 	workspacesAtom,
 } from '@/lib/state'
+import { cn } from '@/lib/utils'
 
 function WorkspaceAvatar({ workspaceName }: { workspaceName: string }) {
 	return (
@@ -79,12 +80,23 @@ export function WorkspaceSwitcher() {
 									onClick={() =>
 										setActiveWorkspaceId(workspace.id)
 									}
-									className="gap-2 p-2"
+									className={cn(
+										'gap-2 p-2',
+										workspace.id === activeWorkspace.id &&
+											'bg-sidebar-accent text-sidebar-accent-foreground',
+									)}
 								>
 									<WorkspaceAvatar
 										workspaceName={workspace.name}
 									/>
-									{workspace.name}
+									<div className="grid flex-1 text-left text-sm leading-tight">
+										<span className="truncate font-semibold">
+											{workspace.name}
+										</span>
+										<span className="truncate text-xs">
+											{workspace.id}
+										</span>
+									</div>
 								</DropdownMenuItem>
 							))}
 							<DropdownMenuSeparator />

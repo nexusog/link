@@ -11,7 +11,13 @@ const WorkspaceCheckProvider = ({
 }: Readonly<{ children: React.ReactNode }>) => {
 	const isNoWorkspace = useAtomValue(isNoWorkspaceAtom)
 
-	return isNoWorkspace ? <CreateWorkspaceCard /> : children
+	return isNoWorkspace ? (
+		<div className="w-full min-h-full flex-grow flex justify-center items-center px-2 md:p-0">
+			<CreateWorkspaceCard />
+		</div>
+	) : (
+		children
+	)
 }
 
 const LoadingProvider = ({
