@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
-import { WorkspaceInStorage } from '../types'
+import { ApiKey, WorkspaceInStorage } from '../types'
 import { atomWithStorage } from 'jotai/utils'
+import { getApiKeys } from '../api'
 
 export const loadingAtom = atom(false)
 
@@ -25,3 +26,46 @@ export const activeWorkspaceAtom = atom(
 )
 
 export const isHydratedAtom = atom(false)
+
+export const activeApiKeysAtom = atom<Promise<ApiKey[] | null>>(async (get) => {
+	const activeWorkspace = get(activeWorkspaceAtom)
+
+	if (!activeWorkspace) {
+		return null
+	}
+
+	const { data: apiKeys, error: GetApiKeysError } = await getApiKeys(
+		activeWorkspace.id,
+		activeWorkspace.secret,
+	)
+
+	if (GetApiKeysError) {
+		return null
+	}
+
+	if (apiKeys.data.data.length === 0) {
+		return null
+	}
+
+	return apiKeys.data.data.apiKeys
+})
+
+export const defaultActiveApiKeyAtom = atom<Promise<ApiKey | null>>(
+	async (get) => {
+		const activeApiKeys = await get(activeApiKeysAtom)
+
+		if (!activeApiKeys) {
+			return null
+		}
+
+		const defaultApiKey = activeApiKeys?.find(
+			(apiKey) => apiKey.label === 'Default',
+		)
+
+		if (!defaultApiKey) {
+			return null
+		}
+
+		return defaultApiKey
+	},
+)

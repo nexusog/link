@@ -21,7 +21,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { createWorkspace } from '@/lib/api'
+import { createApiKey, createWorkspace } from '@/lib/api'
 import { useToast } from '@/hooks/use-toast'
 import { activeWorkspaceIdAtom, workspacesAtom } from '@/lib/state'
 import { useSetAtom } from 'jotai'
@@ -76,6 +76,29 @@ export const CreateWorkspaceCard = () => {
 		])
 
 		setActiveWorkspaceId(workspace.id)
+
+		// create Default API Key
+		const { data: apiKeyResponse, error: CreateApiKeyError } =
+			await createApiKey(
+				{
+					label: 'Default',
+					permissions: ['LINK_READ', 'LINK_WRITE', 'ENGAGEMENT_READ'],
+				},
+				workspace.id,
+				workspace.secret,
+			)
+
+		if (CreateApiKeyError || apiKeyResponse?.data.error === true) {
+			toast({
+				title: 'Error',
+				description:
+					CreateApiKeyError?.response?.data.message ||
+					apiKeyResponse?.data.message ||
+					'Something went wrong',
+				variant: 'destructive',
+			})
+			return
+		}
 
 		toast({
 			title: 'Workspace created',
