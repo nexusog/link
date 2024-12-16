@@ -13,6 +13,8 @@ import { WorkspaceSwitcher } from './workspace-switcher'
 import React from 'react'
 import Link from 'next/link'
 import { ChartColumnIcon, KeyIcon, LinkIcon } from 'lucide-react/'
+import { cn } from '@/lib/utils'
+import { usePathname } from 'next/navigation'
 
 const sidebarItems = [
 	{
@@ -33,6 +35,8 @@ const sidebarItems = [
 ]
 
 export function AppSidebar() {
+	const pathname = usePathname()
+
 	return (
 		<Sidebar>
 			<SidebarHeader className="px-4 py-4">
@@ -42,7 +46,14 @@ export function AppSidebar() {
 			<SidebarContent>
 				<SidebarMenu className="px-2">
 					{sidebarItems.map((item) => (
-						<SidebarMenuItem key={item.title}>
+						<SidebarMenuItem
+							key={item.title}
+							className={cn(
+								'rounded',
+								pathname === item.url &&
+									'bg-brand-100 text-brand-600',
+							)}
+						>
 							<SidebarMenuButton asChild>
 								<Link href={item.url}>
 									<item.icon />
