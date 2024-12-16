@@ -50,18 +50,22 @@ export const CreateWorkspaceCard = () => {
 	})
 
 	async function onSubmit(values: z.infer<typeof createWorkspaceFormSchema>) {
-		const { status, data } = await createWorkspace(values.name)
+		const { data: response, error: CreateWorkspaceAPIError } =
+			await createWorkspace(values.name)
 
-		if (status !== 200) {
+		if (CreateWorkspaceAPIError || response?.data.error === true) {
 			toast({
 				title: 'Error',
-				description: data.message,
+				description:
+					CreateWorkspaceAPIError?.response?.data.message ||
+					response?.data.message ||
+					'Something went wrong',
 				variant: 'destructive',
 			})
 			return
 		}
 
-		const workspace: Omit<WorkspaceInStorage, 'name'> = data.data
+		const workspace: Omit<WorkspaceInStorage, 'name'> = response.data.data
 
 		setWorkspaces([
 			{
