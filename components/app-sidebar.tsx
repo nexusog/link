@@ -12,7 +12,7 @@ import {
 import { WorkspaceSwitcher } from './workspace-switcher'
 import React from 'react'
 import Link from 'next/link'
-import { ChartColumnIcon, KeyIcon, LinkIcon } from 'lucide-react/'
+import { LinkIcon } from 'lucide-react/'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 
@@ -22,16 +22,16 @@ const sidebarItems = [
 		url: '/',
 		icon: LinkIcon,
 	},
-	{
-		title: 'Analytics',
-		url: '/analytics',
-		icon: ChartColumnIcon,
-	},
-	{
-		title: 'API Keys',
-		url: '/api-keys',
-		icon: KeyIcon,
-	},
+	// {
+	// 	title: 'Analytics',
+	// 	url: '/analytics',
+	// 	icon: ChartColumnIcon,
+	// },
+	// {
+	// 	title: 'API Keys',
+	// 	url: '/api-keys',
+	// 	icon: KeyIcon,
+	// },
 ]
 
 export function AppSidebar() {
