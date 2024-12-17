@@ -44,7 +44,7 @@ const useGetDataPoints = (dataPoints: LinkStatsDataPoint[]) => {
 		// Fill missing dates with 0 redirects
 		return last7Days.map((date) => ({
 			date,
-			redirects: dateMap[date] || 0,
+			redirects: dateMap[date] + 5 || 5,
 		}))
 	}, [dataPoints])
 
@@ -70,7 +70,7 @@ const LinkTinyChart = ({
 					<span className="font-semibold">Date:</span>{' '}
 					{hoveredPoint.date} <br />
 					<span className="font-semibold">Redirects:</span>{' '}
-					{hoveredPoint.redirects}
+					{hoveredPoint.redirects - 5}
 				</div>
 			)}
 			<ResponsiveContainer
