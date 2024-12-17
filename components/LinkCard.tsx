@@ -9,14 +9,13 @@ import { activeWorkspaceIdAtom, defaultActiveApiKeyAtom } from '@/lib/state'
 import { useAtomValue } from 'jotai'
 
 import React, { useMemo } from 'react'
-import { ResponsiveContainer, AreaChart, Area, Tooltip } from 'recharts'
+import { ResponsiveContainer, AreaChart, Area } from 'recharts'
 
 type ProcessedDataPoint = { date: string; redirects: number }
 
 // Utility to process data points
 const useGetDataPoints = (dataPoints: LinkStatsDataPoint[]) => {
 	const processDataPoints = useCallback((): ProcessedDataPoint[] => {
-		// Helper to format a timestamp into DD/MM
 		const formatDate = (timestamp: number): string => {
 			const date = new Date(timestamp)
 			const day = String(date.getDate()).padStart(2, '0')
@@ -58,26 +57,46 @@ const LinkTinyChart = ({
 }: {
 	dataPoints: LinkStatsDataPoint[]
 }) => {
+	const [hoveredPoint, setHoveredPoint] = useState<ProcessedDataPoint | null>(
+		null,
+	)
 	const getDataPoints = useGetDataPoints(dataPoints)
 	const chartData = useMemo(() => getDataPoints(), [getDataPoints])
 
 	console.log(chartData)
 
 	return (
-		<div className="relative w-full h-full max-h-[20px]">
-			<div className="text-gray-500 text-xs mb-2">
+		<div className=" relative w-full min-w-20 h-full max-h-6 ">
+			{/* <div className="text-gray-500 text-xs mb-2">
 				{chartData[0]?.date} to {chartData[6]?.date}
-			</div>
-			<ResponsiveContainer width="100%" height="100%">
+				
+			</div> */}
+
+			{hoveredPoint && (
+				<div className="absolute top-2 right-[100]  flex  gap-3 text-xs  bg-white py-2 items-baseline p-1  ">
+					<span className="font-semibold">Date:</span>{' '}
+					{hoveredPoint.date} <br />
+					<span className="font-semibold">Redirects:</span>{' '}
+					{hoveredPoint.redirects}
+				</div>
+			)}
+			<ResponsiveContainer className="h-full" width="100%" height="100%">
 				<AreaChart
+					onMouseMove={(e) => {
+						if (e && e.activePayload && e.activePayload.length) {
+							setHoveredPoint(e.activePayload[0].payload)
+						} else {
+							setHoveredPoint(null)
+						}
+					}}
 					data={chartData}
 					margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
 				>
 					{/* Tooltip */}
-					<Tooltip
+					{/* <Tooltip
 						cursor={{ stroke: '#8884d8', strokeWidth: 1 }}
 						wrapperClassName="bg-white rounded z-10 text-xs !p-1"
-					/>
+					/> */}
 
 					{/* Area */}
 					<Area
@@ -86,6 +105,7 @@ const LinkTinyChart = ({
 						stroke="#8884d8"
 						fill="#8884d8"
 						strokeWidth={2}
+						activeDot={{ r: 6, stroke: '#5555FF', fill: '#FFF' }}
 					/>
 				</AreaChart>
 			</ResponsiveContainer>
