@@ -63,24 +63,21 @@ const LinkTinyChart = ({
 	const getDataPoints = useGetDataPoints(dataPoints)
 	const chartData = useMemo(() => getDataPoints(), [getDataPoints])
 
-	console.log(chartData)
-
 	return (
-		<div className=" relative w-full min-w-20 h-full max-h-6 ">
-			{/* <div className="text-gray-500 text-xs mb-2">
-				{chartData[0]?.date} to {chartData[6]?.date}
-				
-			</div> */}
-
+		<div className="flex gap-2 w-full min-h-fit min-w-20">
 			{hoveredPoint && (
-				<div className="absolute top-2 right-[100]  flex  gap-3 text-xs  bg-white py-2 items-baseline p-1  ">
+				<div className="flex gap-3 text-xs bg-white py-2 items-baseline p-1">
 					<span className="font-semibold">Date:</span>{' '}
 					{hoveredPoint.date} <br />
 					<span className="font-semibold">Redirects:</span>{' '}
 					{hoveredPoint.redirects}
 				</div>
 			)}
-			<ResponsiveContainer className="h-full" width="100%" height="100%">
+			<ResponsiveContainer
+				className="h-full min-h-8 !min-w-44"
+				width="100%"
+				height="100%"
+			>
 				<AreaChart
 					onMouseMove={(e) => {
 						if (e && e.activePayload && e.activePayload.length) {
@@ -91,14 +88,8 @@ const LinkTinyChart = ({
 					}}
 					data={chartData}
 					margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+					onMouseLeave={() => setHoveredPoint(null)}
 				>
-					{/* Tooltip */}
-					{/* <Tooltip
-						cursor={{ stroke: '#8884d8', strokeWidth: 1 }}
-						wrapperClassName="bg-white rounded z-10 text-xs !p-1"
-					/> */}
-
-					{/* Area */}
 					<Area
 						type="monotone"
 						dataKey="redirects"
@@ -149,7 +140,7 @@ export function LinkCard({ link }: { link: Link }) {
 				<div className="flex justify-center items-center">
 					<LinkFavicon url={link.url} />
 				</div>
-				<div className="flex-grow flex flex-col justify-between">
+				<div className="flex-grow flex flex-col gap-0.5 justify-center">
 					<a
 						href={link.shortName || link.id}
 						target="_blank"
@@ -165,7 +156,9 @@ export function LinkCard({ link }: { link: Link }) {
 						{link.url}
 					</a>
 				</div>
-				<div>{stats && <LinkTinyChart dataPoints={stats} />}</div>
+				<div className="min-w-fit min-h-fit">
+					{stats && <LinkTinyChart dataPoints={stats} />}
+				</div>
 			</CardContent>
 		</Card>
 	)
