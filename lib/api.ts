@@ -94,3 +94,18 @@ export function createLink(
 		),
 	)
 }
+
+export function getLinkStats(
+	linkId: string,
+	workspaceId: string,
+	apiKey: string,
+) {
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.get(`/links/${linkId}/stats`, {
+			headers: {
+				'x-workspace-id': workspaceId,
+				'x-api-key': apiKey,
+			},
+		}),
+	)
+}

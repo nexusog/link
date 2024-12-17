@@ -23,3 +23,7 @@ export type ApiKey = {
 	permissions: string[]
 	createdAt: string
 }
+
+export type LinkStatsDataPoint = [number, string]
+
+export type LinkStats = LinkStatsDataPoint[]
