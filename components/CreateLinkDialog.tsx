@@ -30,7 +30,7 @@ const createLinkFormSchema = z.object({
 		.max(50)
 		.transform((value) => value.trim()),
 	url: z.string().url().min(2).startsWith('https://'),
-	shortName: z.string().min(1).optional(),
+	shortName: z.string().optional(),
 })
 
 export function CreateLinkDialog({
