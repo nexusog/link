@@ -60,7 +60,12 @@ export function CreateLinkDialog({
 		}
 
 		const { data: response, error: CreateLinkError } = await createLink(
-			values,
+			{
+				...values,
+				shortName: values.shortName?.trim()
+					? values.shortName
+					: undefined,
+			},
 			activeWorkspace.id,
 			defaultActiveApiKey.key,
 		)
