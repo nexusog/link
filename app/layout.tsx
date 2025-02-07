@@ -34,6 +34,8 @@ export default function RootLayout({
 				<PlausibleProvider
 					domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
 					customDomain={env.NEXT_PUBLIC_PLAUSIBLE_HOST_URL}
+					selfHosted={true}
+					trackOutboundLinks={true}
 				/>
 			</head>
 			<body

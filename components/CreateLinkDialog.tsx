@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { createLink } from '@/lib/api'
 import { toast } from '@/hooks/use-toast'
+import { usePlausible } from 'next-plausible'
 
 const createLinkFormSchema = z.object({
 	title: z
@@ -44,6 +45,7 @@ export function CreateLinkDialog({
 }) {
 	const activeWorkspace = useAtomValue(activeWorkspaceAtom)
 	const defaultActiveApiKey = useAtomValue(defaultActiveApiKeyAtom)
+	const plausible = usePlausible()
 
 	const createLinkForm = useForm<z.infer<typeof createLinkFormSchema>>({
 		resolver: zodResolver(createLinkFormSchema),
@@ -79,6 +81,7 @@ export function CreateLinkDialog({
 					'Something went wrong',
 				variant: 'destructive',
 			})
+			plausible('CreateLinkFail')
 			return
 		}
 
@@ -89,6 +92,7 @@ export function CreateLinkDialog({
 		toast({
 			title: 'Link created',
 		})
+		plausible('CreateLink')
 	}
 
 	return (
