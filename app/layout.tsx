@@ -5,6 +5,8 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import { Providers } from '@/components/providers'
 import { Toaster } from '@/components/ui/toaster'
+import PlausibleProvider from 'next-plausible'
+import { env } from '@/lib/env'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -28,6 +30,12 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				<PlausibleProvider
+					domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+					customDomain={env.NEXT_PUBLIC_PLAUSIBLE_HOST_URL}
+				/>
+			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
