@@ -4,5 +4,14 @@
 	"singleQuote": true,
 	"trailingComma": "all",
 	"tabWidth": 4,
-	"printWidth": 80
+	"printWidth": 80,
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		}
+	]
 }
