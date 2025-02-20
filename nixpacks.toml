@@ -9,6 +9,5 @@ cmds = ["bun install"]
 dependsOn = ["install"]
 cmds = ["bun run build"]
 
-[phases.start]
-dependsOn = ["build"]
-cmds = ["bun run preview"]
+[start]
+cmd = "bun run preview"
