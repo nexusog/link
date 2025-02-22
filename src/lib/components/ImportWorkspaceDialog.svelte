@@ -69,8 +69,11 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content>
-		<Dialog.Header class="space-y-4">
+		<Dialog.Header class="space-y-2">
 			<Dialog.Title>Import Workspace</Dialog.Title>
+			<Dialog.Description
+				>Import a workspace from another device or person.</Dialog.Description
+			>
 
 			<div class="flex w-full flex-col gap-4 py-2">
 				<div class="flex w-full flex-col gap-1.5">

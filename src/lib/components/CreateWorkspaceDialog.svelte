@@ -80,7 +80,7 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content>
-		<Dialog.Header class="space-y-4">
+		<Dialog.Header class="space-y-2">
 			<Dialog.Title class="flex items-center justify-between pr-4">
 				<span>Create Workspace</span>
 				<Button

@@ -2,19 +2,21 @@
 	import '../app.css'
 	import DashboardLayout from '$lib/layouts/Dashboard.svelte'
 	import { onMount } from 'svelte'
-	import { activeWorkspaceId, isStoreHydrating, workspaces } from '$lib/store'
+	import {
+		activeWorkspace,
+		activeWorkspaceId,
+		isStoreHydrating,
+		workspaces,
+	} from '$lib/store'
 	import { Toaster } from '$lib/components/ui/sonner'
+	import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 
 	let { children } = $props()
 
 	onMount(() => {
-		setTimeout(() => {
-			if ($workspaces.length > 0 && $activeWorkspaceId === null) {
-				$activeWorkspaceId = $workspaces[0].id
-			}
-
+		setTimeout(async () => {
 			$isStoreHydrating = false
-		}, 1000)
+		}, 500)
 	})
 </script>
 

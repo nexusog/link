@@ -3,6 +3,7 @@ import * as devalue from 'devalue'
 import { derived, get, writable } from 'svelte/store'
 import { getApiKeys } from '$lib/utils/api'
 import { DEFAULT_API_KEY_LABEL } from '$lib/const'
+import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 
 type StoreWorkspace = {
 	name: string
@@ -23,6 +24,17 @@ export const workspaces = persisted<StoreWorkspace[]>('workspaces', [], {
 	syncTabs: true,
 })
 
+export const workspacesWithExtras = derived(workspaces, async (workspaces) => {
+	return await Promise.all(
+		workspaces.map(async (workspace) => {
+			return {
+				...workspace,
+				isValid: await isWorkspaceValid(workspace.id, workspace.secret),
+			}
+		}),
+	)
+})
+
 export const activeWorkspaceId = persisted<string | null>(
 	'activeWorkspaceId',
 	null,
@@ -34,8 +46,17 @@ export const activeWorkspaceId = persisted<string | null>(
 )
 
 export const activeWorkspace = derived(activeWorkspaceId, (id) => {
-	return get(workspaces).find((workspace) => workspace.id === id)
+	return get(workspaces).find((workspace) => workspace.id === id) || null
 })
+
+export const isActiveWorkspaceValid = derived(
+	activeWorkspace,
+	async (workspace) => {
+		if (!workspace) return false
+
+		return await isWorkspaceValid(workspace?.id, workspace?.secret)
+	},
+)
 
 export const hasNoWorkspaces = derived(workspaces, (workspaces) => {
 	return workspaces.length === 0
