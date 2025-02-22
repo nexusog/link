@@ -4,6 +4,7 @@
 	import { cn } from '$lib/utils/shadcn'
 	import {
 		ArrowDownUp,
+		BoxSelect,
 		ChartBar,
 		Import,
 		Key,
@@ -20,6 +21,7 @@
 		activeWorkspace,
 		activeWorkspaceId,
 		hasNoWorkspaces,
+		isActiveWorkspaceValid,
 		isCreateWorkspaceDialogOpen,
 		isImportWorkspaceDialogOpen,
 		isStoreHydrating,
@@ -28,6 +30,7 @@
 	import CreateWorkspaceDialog from '$lib/components/CreateWorkspaceDialog.svelte'
 	import WorkspaceSwitcherDialog from '$lib/components/WorkspaceSwitcherDialog.svelte'
 	import ImportWorkspaceDialog from '$lib/components/ImportWorkspaceDialog.svelte'
+	import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 
 	type Props = {
 		children: Snippet
@@ -61,16 +64,20 @@
 	let isSidebarOpen = $state(true)
 	let showWorkspaceSelectorDialog = $state(false)
 
+	// if no workspaces, open creation dialog
 	$effect(() => {
 		if ($isStoreHydrating === false && $hasNoWorkspaces) {
 			$isCreateWorkspaceDialogOpen = true
 		}
 	})
 
+	// If we find active workspace invalid, we set active to null
 	$effect(() => {
-		if ($activeWorkspaceId === null && $workspaces.length > 0) {
-			$activeWorkspaceId = $workspaces[0].id
-		}
+		;(async () => {
+			if ((await $isActiveWorkspaceValid) === false) {
+				$activeWorkspaceId = null
+			}
+		})()
 	})
 </script>
 
@@ -100,11 +107,16 @@
 	{/snippet}
 
 	{#snippet SidebarRoutes()}
-		{#if $isStoreHydrating}
-			<div class="w-full px-4">
+		{#snippet Skels()}
+			<div class="w-full space-y-2 px-4">
+				<Skeleton class="dark h-[40px] w-full rounded" />
+				<Skeleton class="dark h-[40px] w-full rounded" />
+				<Skeleton class="dark h-[40px] w-full rounded" />
 				<Skeleton class="dark h-[40px] w-full rounded" />
 			</div>
-		{:else if $hasNoWorkspaces}
+		{/snippet}
+
+		{#snippet ErrorMessage(message: string)}
 			{#if isSidebarOpen}
 				<div class="flex w-full flex-col items-center gap-2 px-4">
 					<Rabbit
@@ -113,10 +125,18 @@
 						strokeWidth={1}
 					/>
 					<p class="text-sm text-muted-foreground">
-						Create Workspace to Get started
+						{message}
 					</p>
 				</div>
 			{/if}
+		{/snippet}
+
+		{#if $isStoreHydrating}
+			{@render Skels()}
+		{:else if $hasNoWorkspaces}
+			{@render ErrorMessage('Create workspace to Get Started')}
+		{:else if $hasNoWorkspaces === false && $activeWorkspace === null}
+			{@render ErrorMessage('Select workspace to Get started')}
 		{:else}
 			<div class="flex flex-grow flex-col gap-2 px-2">
 				{#each routes as route}
@@ -152,15 +172,22 @@
 	{/snippet}
 
 	{#snippet SidebarWorkspaceSelector()}
+		{#snippet Skels()}
+			<div class="px-4">
+				<Skeleton class="dark h-[40px] w-full rounded" />
+			</div>
+		{/snippet}
+
 		{#if $isStoreHydrating === false}
 			<div class="px-4">
 				<Button
 					onclick={() => {
 						if ($hasNoWorkspaces) {
 							$isCreateWorkspaceDialogOpen = true
-						} else {
-							showWorkspaceSelectorDialog = true
+							return
 						}
+
+						showWorkspaceSelectorDialog = true
 					}}
 					class={cn(
 						'group flex min-h-fit w-full justify-start transition',
@@ -168,30 +195,27 @@
 							'animate-heartbeat border border-brand-700',
 					)}
 				>
-					{#if $hasNoWorkspaces}
-						<Plus
-							size={20}
-							class="transition group-hover:text-brand-500"
-						/>
-					{:else}
-						<ArrowDownUp
-							size={20}
-							class="transition group-hover:text-brand-500"
-						/>
-					{/if}
+					{@const Icon = $hasNoWorkspaces ? Plus : ArrowDownUp}
+					<Icon
+						size={20}
+						class="transition group-hover:text-brand-500"
+					/>
+
 					{#if isSidebarOpen}
-						{#if $hasNoWorkspaces}
-							<span>Create Workspace</span>
-						{:else}
-							<span>{$activeWorkspace!.name}</span>
-						{/if}
+						<span>
+							{#if $hasNoWorkspaces}
+								Create Workspace
+							{:else if $hasNoWorkspaces === false && $activeWorkspace === null}
+								<span>Select a Workspace</span>
+							{:else}
+								{$activeWorkspace?.name}
+							{/if}
+						</span>
 					{/if}
 				</Button>
 			</div>
 		{:else}
-			<div class="px-4">
-				<Skeleton class="dark h-[40px] w-full rounded" />
-			</div>
+			{@render Skels()}
 		{/if}
 	{/snippet}
 
@@ -204,6 +228,28 @@
 		{@render SidebarHeader()}
 		{@render SidebarWorkspaceSelector()}
 		{@render SidebarRoutes()}
+	</div>
+{/snippet}
+
+{#snippet PageError(message: string, children: Snippet)}
+	{@const showEaster = Math.random() < 0.01}
+
+	<div
+		data-easter={showEaster}
+		class="flex h-full w-full flex-col items-center justify-center gap-4"
+	>
+		<Rabbit
+			size={128}
+			class={cn(
+				'text-muted-foreground',
+				showEaster && 'animate-[bounce_400ms_infinite] text-brand-600',
+			)}
+			strokeWidth={1}
+		/>
+		<h2 class="text-lg text-muted-foreground">
+			{message}
+		</h2>
+		{@render children()}
 	</div>
 {/snippet}
 
@@ -230,23 +276,31 @@
 				<Skeleton class="h-[200px] w-1/2 rounded" />
 			</div>
 		{:else if $hasNoWorkspaces}
-			<div
-				class="flex h-full w-full flex-col items-center justify-center gap-4"
-			>
-				<Rabbit
-					size={128}
-					class="text-muted-foreground"
-					strokeWidth={1}
-				/>
-				<h2 class="text-lg text-muted-foreground">
-					Create Workspace to Get Started
-				</h2>
+			{#snippet CreateWorkspaceButton()}
 				<Button
 					onclick={() => {
 						$isCreateWorkspaceDialogOpen = true
 					}}><Plus /> Create Workspace</Button
 				>
-			</div>
+			{/snippet}
+
+			{@render PageError(
+				'Create workspace to Get Started',
+				CreateWorkspaceButton,
+			)}
+		{:else if $hasNoWorkspaces === false && $activeWorkspace === null}
+			{#snippet SelectWorkspaceButton()}
+				<Button
+					onclick={() => {
+						showWorkspaceSelectorDialog = true
+					}}><ArrowDownUp size={20} /> Select Workspace</Button
+				>
+			{/snippet}
+
+			{@render PageError(
+				'I see no workspace selected :(',
+				SelectWorkspaceButton,
+			)}
 		{:else}
 			{@render children()}
 		{/if}
