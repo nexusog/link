@@ -1,39 +1,34 @@
 import { persisted } from 'svelte-persisted-store'
 import * as devalue from 'devalue'
 import { derived, get, writable } from 'svelte/store'
+import { getApiKeys } from '$lib/utils/api'
 
-type Workspace = {
+type StoreWorkspace = {
 	name: string
 	id: string
 	secret: string
 }
 
-export const workspaces = persisted<Workspace[]>(
-	'workspaces',
-	[
-		{
-			id: 'workspace_d501a7814af88d78',
-			name: 'Neon',
-			secret: 'secret_b57e8fdff6cfd30dc9953ca8c8c138c82f71dcc331be1a9c20207b64bf7a4cc4',
-		},
-		{
-			id: 'workspace_013efa7211e6a5b9',
-			name: 'Anil',
-			secret: 'secret_95b7cc88c0b8a24fb3d8a6f8ec41b539c74b0ac8e4e79fad8a185177c8395a74',
-		},
-	],
-	{
-		serializer: devalue,
-		storage: 'local',
-	},
-)
+export type ApiKey = {
+	id: string
+	key: string
+	label: string
+	permissions: string[]
+}
+
+export const workspaces = persisted<StoreWorkspace[]>('workspaces', [], {
+	serializer: devalue,
+	storage: 'local',
+	syncTabs: true,
+})
 
 export const activeWorkspaceId = persisted<string | null>(
 	'activeWorkspaceId',
-	'workspace_d501a7814af88d78',
+	null,
 	{
 		serializer: devalue,
 		storage: 'local',
+		syncTabs: true,
 	},
 )
 
@@ -41,4 +36,34 @@ export const activeWorkspace = derived(activeWorkspaceId, (id) => {
 	return get(workspaces).find((workspace) => workspace.id === id)
 })
 
+export const hasNoWorkspaces = derived(workspaces, (workspaces) => {
+	return workspaces.length === 0
+})
+
 export const isStoreHydrating = writable(true)
+
+export const isCreateWorkspaceDialogOpen = writable(false)
+export const isImportWorkspaceDialogOpen = writable(false)
+
+export const activeWorkspaceApiKeys = derived(
+	activeWorkspace,
+	async (workspace): Promise<ApiKey[]> => {
+		if (!workspace) return []
+
+		const { data: response } = await getApiKeys(
+			workspace.id,
+			workspace.secret,
+		)
+
+		if (!response) return []
+
+		return response.data?.data?.apiKeys || []
+	},
+)
+
+export const activeWorkspaceDefaultApiKey = derived(
+	activeWorkspaceApiKeys,
+	async (apiKeys) => {
+		return (await apiKeys).find((apiKey) => apiKey.label === 'UI_DEFAULT')
+	},
+)

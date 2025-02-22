@@ -31,11 +31,13 @@
 		"globals": "^15.14.0",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.4.3",
+		"mode-watcher": "^0.5.1",
 		"prettier": "^3.5.1",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.10",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
+		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^3.0.1",
 		"tailwind-variants": "^0.3.1",
 		"tailwindcss": "^3.4.17",
@@ -45,6 +47,8 @@
 	},
 	"packageManager": "bun@1.2.2",
 	"dependencies": {
+		"@open-draft/until": "^2.1.0",
+		"axios": "^1.7.9",
 		"devalue": "^5.1.1",
 		"lucide-svelte": "^0.475.0",
 		"svelte-persisted-store": "^0.12.0"
