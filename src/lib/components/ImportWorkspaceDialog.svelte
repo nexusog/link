@@ -28,8 +28,6 @@
 			workspaceSecretValue,
 		)
 
-		console.log({ error, response })
-
 		if (error || response?.data.error) {
 			toast.error(
 				response?.data.message ||
