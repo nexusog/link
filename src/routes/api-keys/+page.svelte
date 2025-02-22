@@ -25,18 +25,18 @@
 	<div class="flex flex-col gap-2 rounded border p-4 hover:shadow">
 		<div class="flex items-center gap-2 text-base font-semibold">
 			<span>{data.label}</span>
-			<Tooltip.Provider>
-				<Tooltip.Root delayDuration={0}>
-					<Tooltip.Trigger>
-						<Info size={14} />
-					</Tooltip.Trigger>
-					{#if isDefault}
+			{#if isDefault}
+				<Tooltip.Provider>
+					<Tooltip.Root delayDuration={0}>
+						<Tooltip.Trigger>
+							<Info size={14} />
+						</Tooltip.Trigger>
 						<Tooltip.Content side="right">
 							<p>This is the default API key for the UI</p>
 						</Tooltip.Content>
-					{/if}
-				</Tooltip.Root>
-			</Tooltip.Provider>
+					</Tooltip.Root>
+				</Tooltip.Provider>
+			{/if}
 		</div>
 		<div class="flex gap-2">
 			<div class="text-sm text-muted-foreground">{data.id}</div>
