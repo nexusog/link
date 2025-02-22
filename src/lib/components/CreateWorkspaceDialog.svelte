@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
+	import { DEFAULT_API_KEY_LABEL } from '$lib/const'
 	import {
 		activeWorkspaceId,
 		isImportWorkspaceDialogOpen,
@@ -43,7 +44,7 @@
 		const { error: apiKeyError, data: apiKeyResponse } =
 			await api.createApiKey(
 				{
-					label: 'UI_DEFAULT',
+					label: DEFAULT_API_KEY_LABEL,
 					permissions: ['LINK_READ', 'LINK_WRITE', 'ENGAGEMENT_READ'],
 				},
 				workspaceId,

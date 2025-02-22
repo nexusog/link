@@ -6,6 +6,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js'
 	import { toast } from 'svelte-sonner'
 	import { Skeleton } from '$lib/components/ui/skeleton'
+	import { DEFAULT_API_KEY_LABEL } from '$lib/const'
 </script>
 
 {#snippet CopyButton(data: string)}
@@ -20,7 +21,7 @@
 {/snippet}
 
 {#snippet APIKeyCard(data: ApiKey)}
-	{@const isDefault = data.label === 'UI_DEFAULT'}
+	{@const isDefault = data.label === DEFAULT_API_KEY_LABEL}
 	<div class="flex flex-col gap-2 rounded border p-4 hover:shadow">
 		<div class="flex items-center gap-2 text-base font-semibold">
 			<span>{data.label}</span>
@@ -29,9 +30,11 @@
 					<Tooltip.Trigger>
 						<Info size={14} />
 					</Tooltip.Trigger>
-					<Tooltip.Content side="right">
-						<p>This is the default API key for the UI</p>
-					</Tooltip.Content>
+					{#if isDefault}
+						<Tooltip.Content side="right">
+							<p>This is the default API key for the UI</p>
+						</Tooltip.Content>
+					{/if}
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		</div>
