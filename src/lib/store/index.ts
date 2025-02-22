@@ -2,6 +2,7 @@ import { persisted } from 'svelte-persisted-store'
 import * as devalue from 'devalue'
 import { derived, get, writable } from 'svelte/store'
 import { getApiKeys } from '$lib/utils/api'
+import { DEFAULT_API_KEY_LABEL } from '$lib/const'
 
 type StoreWorkspace = {
 	name: string
@@ -64,6 +65,8 @@ export const activeWorkspaceApiKeys = derived(
 export const activeWorkspaceDefaultApiKey = derived(
 	activeWorkspaceApiKeys,
 	async (apiKeys) => {
-		return (await apiKeys).find((apiKey) => apiKey.label === 'UI_DEFAULT')
+		return (await apiKeys).find(
+			(apiKey) => apiKey.label === DEFAULT_API_KEY_LABEL,
+		)
 	},
 )
