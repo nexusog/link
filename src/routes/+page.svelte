@@ -21,7 +21,15 @@
 <div class="flex w-full flex-grow flex-col gap-6">
 	<h1 class="text-3xl font-semibold">Dashboard</h1>
 	{#await getWorkspaceStats($activeWorkspace!.id, $activeWorkspace!.secret)}
-		<!--  -->
+		<div class="flex gap-4">
+			<Skeleton class="h-[130px] w-[300px]" />
+			<Skeleton class="h-[130px] w-[300px]" />
+			<Skeleton class="h-[130px] w-[300px]" />
+		</div>
+		<div class="flex gap-4">
+			<Skeleton class="h-[300px] w-[500px]" />
+			<Skeleton class="h-[300px] w-[500px]" />
+		</div>
 	{:then { data: response, error }}
 		{#if error || response?.data?.error}
 			<div
