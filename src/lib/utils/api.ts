@@ -31,6 +31,19 @@ export function getWorkspace(workspaceId: string, workspaceSecret: string) {
 	)
 }
 
+export function getWorkspaceStats(
+	workspaceId: string,
+	workspaceSecret: string,
+) {
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.get(`/workspaces/${workspaceId}/stats`, {
+			headers: {
+				'x-workspace-secret': workspaceSecret,
+			},
+		}),
+	)
+}
+
 export function createApiKey(
 	data: {
 		label: string
@@ -62,6 +75,17 @@ export function getApiKeys(workspaceId: string, workspaceSecret: string) {
 			headers: {
 				'x-workspace-id': workspaceId,
 				'x-workspace-secret': workspaceSecret,
+			},
+		}),
+	)
+}
+
+export function getLinkById(id: string, workspaceId: string, apiKey: string) {
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.get(`/links/${id}`, {
+			headers: {
+				'x-workspace-id': workspaceId,
+				'x-api-key': apiKey,
 			},
 		}),
 	)
