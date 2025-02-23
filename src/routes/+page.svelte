@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte'
-	import { activeWorkspace, activeWorkspaceDefaultApiKey } from '$lib/store'
+	import {
+		activeWorkspace,
+		activeWorkspaceDefaultApiKey,
+		activeWorkspaceStats,
+	} from '$lib/store'
 	import { getLinkById, getWorkspaceStats } from '$lib/utils/api'
 	import { ExternalLink, Meh } from 'lucide-svelte'
-
-	let defaultAPIKey = $derived(
-		(async () => (await $activeWorkspaceDefaultApiKey)!.key)(),
-	)
 </script>
 
 {#snippet StatsNumberCard(title: string, value: number)}
@@ -20,7 +20,7 @@
 
 <div class="flex w-full flex-grow flex-col gap-6">
 	<h1 class="text-3xl font-semibold">Dashboard</h1>
-	{#await getWorkspaceStats($activeWorkspace!.id, $activeWorkspace!.secret)}
+	{#await $activeWorkspaceStats}
 		<div class="flex gap-4">
 			<Skeleton class="h-[130px] w-[300px]" />
 			<Skeleton class="h-[130px] w-[300px]" />
@@ -30,8 +30,8 @@
 			<Skeleton class="h-[300px] w-[500px]" />
 			<Skeleton class="h-[300px] w-[500px]" />
 		</div>
-	{:then { data: response, error }}
-		{#if error || response?.data?.error}
+	{:then stats}
+		{#if !stats}
 			<div
 				class="flex w-full flex-col items-center justify-center gap-2 py-16"
 			>
@@ -39,12 +39,9 @@
 				<h1 class="text-xl font-semibold text-destructive">
 					Oops! Something went wrong.
 				</h1>
-				<p class="text-xs text-destructive">
-					{error?.response?.data.message || error?.message}
-				</p>
 			</div>
 		{:else}
-			{@const data = response.data.data}
+			{@const data = stats}
 			<div class="stats-grid grid gap-4">
 				{@render StatsNumberCard('Total Links', data.numberOfLinks)}
 				{@render StatsNumberCard(
