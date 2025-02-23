@@ -10,6 +10,7 @@
 	} from '$lib/store'
 	import { Plus } from 'lucide-svelte'
 	import { Skeleton } from '$lib/components/ui/skeleton'
+	import * as Tooltip from '$lib/components/ui/tooltip'
 
 	type Props = {
 		open: boolean
@@ -51,11 +52,24 @@
 								</div>
 								<div class="flex gap-1">
 									{#if workspace.isValid === false}
-										<div
-											class="rounded bg-destructive p-2 py-0.5 text-xs text-destructive-foreground"
-										>
-											Invalid Workspace
-										</div>
+										<Tooltip.Provider>
+											<Tooltip.Root delayDuration={0}>
+												<Tooltip.Trigger>
+													<div
+														class="rounded bg-destructive p-2 py-0.5 text-xs text-destructive-foreground"
+													>
+														Invalid
+													</div>
+												</Tooltip.Trigger>
+												<Tooltip.Content side="top">
+													<p>
+														The server does not
+														recognize this
+														workspace.
+													</p>
+												</Tooltip.Content>
+											</Tooltip.Root>
+										</Tooltip.Provider>
 									{/if}
 									{#if isCurrent}
 										<div
