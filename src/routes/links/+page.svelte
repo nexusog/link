@@ -22,7 +22,7 @@
 
 {#snippet LinkFavicon(url: string)}
 	<img
-		src="https://icon.horse/icon/{new URL(url).hostname}"
+		src="https://favicon.im/{new URL(url).hostname}"
 		class="h-5 max-h-5 min-h-5 w-5 min-w-5 max-w-5 rounded-full"
 		alt=""
 	/>
