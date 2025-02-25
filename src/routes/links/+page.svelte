@@ -14,6 +14,7 @@
 		ChevronDown,
 		Copy,
 		CornerDownRight,
+		EllipsisVertical,
 		ExternalLink,
 		Filter,
 		Meh,
@@ -99,7 +100,7 @@
 					{@const linkHref = `${location.origin}/${link.shortName || link.id}`}
 
 					<div
-						class="flex w-full gap-16 rounded-xl border px-4 py-5 text-sm transition hover:shadow-md"
+						class="group/card flex w-full gap-16 rounded-xl border px-4 py-5 text-sm transition hover:shadow-md"
 					>
 						<div class="flex min-w-0 grow items-center gap-3">
 							<div
@@ -146,7 +147,7 @@
 										class="group flex items-center gap-1 overflow-hidden hover:text-brand-600 hover:underline"
 									>
 										<a
-											class="max-w-fit overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
+											class="max-w-[50ch] overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
 											href={link.url}
 											target="_blank"
 											rel="noreferrer"
@@ -198,6 +199,22 @@
 									<!-- failed to get default api key -->
 								{/if}
 							{/await}
+							<DropdownMenu.Root>
+								<DropdownMenu.Trigger>
+									<Button
+										size="icon"
+										class="transition group-hover/card:border"
+										variant="ghost"
+									>
+										<EllipsisVertical size={20} />
+									</Button>
+								</DropdownMenu.Trigger>
+								<DropdownMenu.Content>
+									<div class="px-4 py-2 italic">
+										Coming Soon!
+									</div>
+								</DropdownMenu.Content>
+							</DropdownMenu.Root>
 						</div>
 					</div>
 				{/each}
