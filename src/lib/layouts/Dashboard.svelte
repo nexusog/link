@@ -222,7 +222,7 @@
 	<div
 		class={cn(
 			'flex flex-col gap-6 p-4 px-0 transition-all',
-			isSidebarOpen && 'w-64',
+			isSidebarOpen && 'w-64 min-w-64 max-w-64',
 		)}
 	>
 		{@render SidebarHeader()}
@@ -265,7 +265,7 @@
 	{@render Sidebar()}
 
 	<div
-		class="brand-scrollbar my-4 flex flex-grow flex-col overflow-auto rounded-l-xl bg-background p-8 text-foreground"
+		class="brand-scrollbar my-4 flex flex-grow flex-col overflow-auto rounded-l-xl bg-background p-8 px-64 text-foreground"
 	>
 		{#if $isStoreHydrating}
 			<div class="flex flex-col gap-4">

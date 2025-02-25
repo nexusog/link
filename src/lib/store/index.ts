@@ -1,7 +1,7 @@
 import { persisted } from 'svelte-persisted-store'
 import * as devalue from 'devalue'
 import { derived, get, writable } from 'svelte/store'
-import { getApiKeys, getWorkspaceStats } from '$lib/utils/api'
+import { getApiKeys, getLinks, getWorkspaceStats } from '$lib/utils/api'
 import { DEFAULT_API_KEY_LABEL } from '$lib/const'
 import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 
@@ -105,5 +105,23 @@ export const activeWorkspaceStats = derived(
 		if (!response) return null
 
 		return response.data.data
+	},
+)
+
+export const isCreateLinkDialogOpen = writable(false)
+
+export const activeWorkspaceLinks = derived(
+	activeWorkspace,
+	async (workspace) => {
+		if (!workspace) return { error: true }
+
+		const { data: response } = await getLinks(
+			workspace.id,
+			(await get(activeWorkspaceDefaultApiKey))!.key,
+		)
+
+		if (!response) return { error: true }
+
+		return { data: response.data.data, error: false }
 	},
 )
