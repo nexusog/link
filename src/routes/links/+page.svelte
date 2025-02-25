@@ -74,7 +74,7 @@
 		</div>
 		<div class="flex justify-center gap-2">
 			<Input class="h-full w-64" placeholder="Search..." />
-			<Button size="lg"
+			<Button size="lg" class="w-fit px-5"
 				>Create link
 				<KeyboardShortcut>C</KeyboardShortcut>
 			</Button>
