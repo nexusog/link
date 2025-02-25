@@ -11,13 +11,17 @@
 	import { getLinkStats } from '$lib/utils/api'
 	import { cn } from '$lib/utils/shadcn'
 	import {
+		ChevronDown,
 		Copy,
 		CornerDownRight,
 		ExternalLink,
+		Filter,
 		Meh,
 		MousePointerClick,
+		Settings2,
 	} from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
 </script>
 
 {#snippet LinkFavicon(url: string)}
@@ -29,10 +33,44 @@
 {/snippet}
 
 <div class="flex flex-grow flex-col gap-4">
-	<h1 class="text-3xl font-semibold">Links</h1>
+	<h1 class="text-2xl font-semibold">Links</h1>
+	<div class="my-1"></div>
 
 	<div class="flex justify-between">
-		<div></div>
+		<div>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					<Button
+						size="lg"
+						class="w-fit justify-start px-4"
+						variant="outline"
+					>
+						<Filter />
+						Filter
+						<ChevronDown class="text-muted-foreground" />
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content>
+					<div class="px-4 py-2 italic">Coming Soon!</div>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					<Button
+						size="lg"
+						class="w-fit justify-start px-4"
+						variant="outline"
+					>
+						<Settings2 />
+						Display
+						<ChevronDown class="text-muted-foreground" />
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content>
+					<div class="px-4 py-2 italic">Coming Soon!</div>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+		</div>
 		<div class="flex justify-center gap-2">
 			<Input class="h-full w-64" placeholder="Search..." />
 			<Button size="lg"
