@@ -79,6 +79,21 @@
 			}
 		})()
 	})
+
+	$effect(() => {
+		function handleKeyboardShortcut(event: KeyboardEvent) {
+			if (event.key === 'w') {
+				event.preventDefault()
+				showWorkspaceSelectorDialog = true
+			}
+		}
+
+		document.addEventListener('keydown', handleKeyboardShortcut)
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyboardShortcut)
+		}
+	})
 </script>
 
 {#snippet Sidebar()}

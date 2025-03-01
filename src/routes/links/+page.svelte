@@ -44,6 +44,7 @@
 	let searchInputValue = $state('')
 
 	let loadingLinks = $state<string[]>([])
+	let searchLinksInputRef = $state<HTMLElement | null>(null)
 
 	const handleSearchInput = debounce(() => {
 		$activeWorkspaceLinksSearch = searchInputValue
@@ -76,6 +77,35 @@
 			loadingLinks = loadingLinks.filter((id) => id !== linkId)
 		}
 	}
+
+	$effect(() => {
+		function handleKeyboardShortcut(event: KeyboardEvent) {
+			if ((event.target as HTMLElement).tagName === 'INPUT') {
+				return
+			}
+
+			if (event.key === 'c') {
+				event.preventDefault()
+				$isCreateLinkDialogOpen = true
+			}
+
+			if (event.key == '/') {
+				event.preventDefault()
+				searchLinksInputRef?.focus()
+			}
+
+			if (event.key === 'd') {
+				event.preventDefault()
+				isDisplayDropdownOpen = !isDisplayDropdownOpen
+			}
+		}
+
+		document.addEventListener('keydown', handleKeyboardShortcut)
+
+		return () => {
+			document.removeEventListener('keydown', handleKeyboardShortcut)
+		}
+	})
 </script>
 
 {#snippet LinkFavicon(url: string)}
@@ -187,6 +217,7 @@
 		</div>
 		<div class="flex justify-center gap-2">
 			<Input
+				bind:ref={searchLinksInputRef}
 				bind:value={searchInputValue}
 				oninput={handleSearchInput}
 				class="h-full w-64"
