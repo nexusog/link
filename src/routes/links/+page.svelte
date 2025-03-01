@@ -7,11 +7,14 @@
 		activeWorkspace,
 		activeWorkspaceDefaultApiKey,
 		activeWorkspaceLinks,
+		activeWorkspaceLinksPageNumber,
 	} from '$lib/store'
 	import { getLinkStatsCount } from '$lib/utils/api'
 	import { cn } from '$lib/utils/shadcn'
 	import {
 		ChevronDown,
+		ChevronLeft,
+		ChevronRight,
 		Copy,
 		CornerDownRight,
 		EllipsisVertical,
@@ -23,6 +26,11 @@
 	} from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
+	import * as Pagination from '$lib/components/ui/pagination/index.js'
+
+	$effect(() => {
+		console.log($activeWorkspaceLinksPageNumber)
+	})
 </script>
 
 {#snippet LinkFavicon(url: string)}
@@ -167,7 +175,6 @@
 							{#await $activeWorkspaceDefaultApiKey then defaultApiKey}
 								{#if defaultApiKey}
 									{#await getLinkStatsCount(link.id, $activeWorkspace!.id, defaultApiKey.key)}
-										<!--  -->
 										<Skeleton
 											class="h-[30px] w-[90px] rounded"
 										/>
@@ -217,6 +224,54 @@
 						</div>
 					</div>
 				{/each}
+
+				{@const totalCount = data.count}
+
+				<!-- Pagination -->
+				<Pagination.Root
+					count={totalCount}
+					perPage={10}
+					page={$activeWorkspaceLinksPageNumber}
+					onPageChange={(newPageNumber) => {
+						$activeWorkspaceLinksPageNumber = newPageNumber
+					}}
+					class="items-end"
+				>
+					{#snippet children({ pages, currentPage })}
+						<Pagination.Content>
+							<Pagination.Item>
+								<Pagination.PrevButton>
+									<ChevronLeft class="size-4" />
+									<span class="hidden sm:block">Previous</span
+									>
+								</Pagination.PrevButton>
+							</Pagination.Item>
+							{#each pages as page (page.key)}
+								{#if page.type === 'ellipsis'}
+									<Pagination.Item>
+										<Pagination.Ellipsis />
+									</Pagination.Item>
+								{:else}
+									<Pagination.Item>
+										<Pagination.Link
+											{page}
+											isActive={currentPage ===
+												page.value}
+										>
+											{page.value}
+										</Pagination.Link>
+									</Pagination.Item>
+								{/if}
+							{/each}
+							<Pagination.Item>
+								<Pagination.NextButton>
+									<span class="hidden sm:block">Next</span>
+									<ChevronRight class="size-4" />
+								</Pagination.NextButton>
+							</Pagination.Item>
+						</Pagination.Content>
+					{/snippet}
+				</Pagination.Root>
 			{/if}
 		{/await}
 	</div>
