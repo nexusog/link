@@ -1,7 +1,12 @@
 import { persisted } from 'svelte-persisted-store'
 import * as devalue from 'devalue'
 import { derived, get, writable } from 'svelte/store'
-import { getApiKeys, getLinks, getWorkspaceStats } from '$lib/utils/api'
+import {
+	getApiKeys,
+	getLinks,
+	getLinkStatsCount,
+	getWorkspaceStats,
+} from '$lib/utils/api'
 import { DEFAULT_API_KEY_LABEL } from '$lib/const'
 import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 
@@ -126,12 +131,24 @@ export const activeWorkspaceLinks = derived(
 		activeWorkspaceLinksSearch,
 		activeWorkspaceLinksCreatedRefCounter,
 	],
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async ([workspace, pageNumber, sortBy, search, _refCounter]) => {
+	async ([
+		workspace,
+		pageNumber,
+		sortBy,
+		search,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		_refCounter,
+	]) => {
 		if (!workspace) return { error: true }
 
+		if ((await get(isActiveWorkspaceValid)) === false)
+			return { error: true }
+
+		if ((await get(activeWorkspaceDefaultApiKey)) === null)
+			return { error: true }
+
 		const { data: response } = await getLinks(
-			workspace.id,
+			workspace!.id,
 			(await get(activeWorkspaceDefaultApiKey))!.key,
 			{
 				page: pageNumber.toString(),
@@ -143,5 +160,29 @@ export const activeWorkspaceLinks = derived(
 		if (!response) return { error: true }
 
 		return { data: response.data.data, error: false }
+	},
+)
+
+export const activeWorkspaceLinksWithExtras = derived(
+	activeWorkspaceLinks,
+	async (links) => {
+		if ((await links).error) return { error: true }
+
+		const data = (await links).data
+		const workspaceId = get(activeWorkspaceId)!
+		const apiKey = (await get(activeWorkspaceDefaultApiKey))!.key
+
+		return {
+			error: false,
+			data: {
+				...data,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				links: data.links.map((link: any) => ({
+					...link,
+					statsCount: () =>
+						getLinkStatsCount(link.id, workspaceId, apiKey),
+				})),
+			},
+		}
 	},
 )
