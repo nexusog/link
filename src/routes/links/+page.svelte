@@ -8,10 +8,12 @@
 		activeWorkspaceDefaultApiKey,
 		activeWorkspaceLinks,
 		activeWorkspaceLinksPageNumber,
+		activeWorkspaceLinksSortBy,
 	} from '$lib/store'
 	import { getLinkStatsCount } from '$lib/utils/api'
 	import { cn } from '$lib/utils/shadcn'
 	import {
+		ArrowUpDown,
 		ChevronDown,
 		ChevronLeft,
 		ChevronRight,
@@ -25,11 +27,15 @@
 		Settings2,
 	} from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
-	import * as Pagination from '$lib/components/ui/pagination/index.js'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+	import * as Pagination from '$lib/components/ui/pagination'
+	import * as Select from '$lib/components/ui/select'
+	import moment from 'moment'
+
+	let isDisplayDropdownOpen = $state(false)
 
 	$effect(() => {
-		console.log($activeWorkspaceLinksPageNumber)
+		console.log(isDisplayDropdownOpen)
 	})
 </script>
 
@@ -39,6 +45,50 @@
 		class="h-5 max-h-5 min-h-5 w-5 min-w-5 max-w-5 rounded-full"
 		alt=""
 	/>
+{/snippet}
+
+{#snippet DisplayOptionCardContent()}
+	{@const values = [
+		{
+			value: 'createdAt',
+			label: 'Date created',
+		},
+		{
+			value: 'totalRedirects',
+			label: 'Total Clicks',
+		},
+	]}
+
+	<div class="flex min-w-[300px] flex-col p-0">
+		<!-- <hr class="w-full" /> -->
+
+		<div class="flex items-center justify-between px-4 py-4 text-sm">
+			<div class="flex items-center gap-2">
+				<ArrowUpDown size={14} />
+				<span>Ordering</span>
+			</div>
+			<div>
+				<Select.Root
+					type="single"
+					bind:value={$activeWorkspaceLinksSortBy}
+					onValueChange={() => (isDisplayDropdownOpen = false)}
+				>
+					<Select.Trigger class="w-fit"
+						>{values.find(
+							(e) => e.value === $activeWorkspaceLinksSortBy,
+						)?.label ?? 'Select SortBy'}</Select.Trigger
+					>
+					<Select.Content>
+						{#each values as { value, label }}
+							<Select.Item {value}>{label}</Select.Item>
+						{/each}
+					</Select.Content>
+				</Select.Root>
+			</div>
+		</div>
+
+		<!-- <hr class="w-full" /> -->
+	</div>
 {/snippet}
 
 <div class="flex flex-grow flex-col gap-4">
@@ -63,7 +113,7 @@
 					<div class="px-4 py-2 italic">Coming Soon!</div>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
-			<DropdownMenu.Root>
+			<DropdownMenu.Root bind:open={isDisplayDropdownOpen}>
 				<DropdownMenu.Trigger>
 					<Button
 						size="lg"
@@ -76,7 +126,7 @@
 					</Button>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content>
-					<div class="px-4 py-2 italic">Coming Soon!</div>
+					{@render DisplayOptionCardContent()}
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 		</div>
@@ -167,6 +217,13 @@
 											size={12}
 											class="hidden group-hover:block"
 										/>
+									</div>
+									<div
+										class="ml-2 hidden text-xs group-hover/card:block"
+									>
+										{moment(link.createdAt).format(
+											'MMM D, YYYY',
+										)}
 									</div>
 								</div>
 							</div>
