@@ -33,10 +33,6 @@
 	import moment from 'moment'
 
 	let isDisplayDropdownOpen = $state(false)
-
-	$effect(() => {
-		console.log(isDisplayDropdownOpen)
-	})
 </script>
 
 {#snippet LinkFavicon(url: string)}
