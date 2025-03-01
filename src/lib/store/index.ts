@@ -26,7 +26,6 @@ export type ApiKey = {
 export const workspaces = persisted<StoreWorkspace[]>('workspaces', [], {
 	serializer: devalue,
 	storage: 'local',
-	syncTabs: true,
 })
 
 export const workspacesWithExtras = derived(workspaces, async (workspaces) => {
@@ -46,7 +45,6 @@ export const activeWorkspaceId = persisted<string | null>(
 	{
 		serializer: devalue,
 		storage: 'local',
-		syncTabs: true,
 	},
 )
 
