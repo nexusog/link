@@ -53,71 +53,73 @@
 					data.totalEngagementsLastWeek,
 				)}
 			</div>
-			<div
-				class="w-fit min-w-96 space-y-4 rounded border p-4 hover:shadow"
-			>
-				<h2 class="px-2 text-base font-semibold">
-					Top Performing Links
-				</h2>
-				<div class="flex flex-col gap-2">
-					{#snippet Skels()}
-						<Skeleton class="h-[40px] w-full" />
-						<Skeleton class="h-[40px] w-full" />
-						<Skeleton class="h-[40px] w-full" />
-					{/snippet}
+			{#if data.topPerformingLinks.length > 0}
+				<div
+					class="w-fit min-w-96 space-y-4 rounded border p-4 hover:shadow"
+				>
+					<h2 class="px-2 text-base font-semibold">
+						Top Performing Links
+					</h2>
+					<div class="flex flex-col gap-2">
+						{#snippet Skels()}
+							<Skeleton class="h-[40px] w-full" />
+							<Skeleton class="h-[40px] w-full" />
+							<Skeleton class="h-[40px] w-full" />
+						{/snippet}
 
-					{#await $activeWorkspaceDefaultApiKey}
-						{@render Skels()}
-					{:then apiKey}
-						{#each data.topPerformingLinks as performingLink, index}
-							{#await getLinkById(performingLink.id, $activeWorkspace!.id, apiKey!.key)}
-								<Skeleton class="h-[40px] w-full" />
-							{:then { data: response, error }}
-								{#if error || !response?.data?.data}
-									<div class="flex p-2 text-destructive">
-										Failed to fetch
-									</div>
-								{:else}
-									{@const link = response.data.data}
-									<div
-										class="flex items-start gap-2 rounded border border-transparent p-2 transition hover:border-brand-600/20 hover:bg-brand-300/5"
-									>
-										<div class="text-sm font-semibold">
-											{index + 1}.
+						{#await $activeWorkspaceDefaultApiKey}
+							{@render Skels()}
+						{:then apiKey}
+							{#each data.topPerformingLinks as performingLink, index}
+								{#await getLinkById(performingLink.id, $activeWorkspace!.id, apiKey!.key)}
+									<Skeleton class="h-[40px] w-full" />
+								{:then { data: response, error }}
+									{#if error || !response?.data?.data}
+										<div class="flex p-2 text-destructive">
+											Failed to fetch
 										</div>
+									{:else}
+										{@const link = response.data.data}
 										<div
-											class="flex flex-grow flex-col gap-0.5"
+											class="flex items-start gap-2 rounded border border-transparent p-2 transition hover:border-brand-600/20 hover:bg-brand-300/5"
 										>
-											<div class="text-sm">
-												{link.title}
+											<div class="text-sm font-semibold">
+												{index + 1}.
 											</div>
-											<a
-												target="_blank"
-												class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-brand-600 hover:underline"
-												href={`${location.origin}/${link.shortName || link.id}`}
+											<div
+												class="flex flex-grow flex-col gap-0.5"
 											>
-												<span class="">
-													{location.host}/{link.shortName ||
-														link.id}
-												</span>
-												<ExternalLink
-													class="hidden group-hover:block"
-													size={10}
-												/>
-											</a>
+												<div class="text-sm">
+													{link.title}
+												</div>
+												<a
+													target="_blank"
+													class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-brand-600 hover:underline"
+													href={`${location.origin}/${link.shortName || link.id}`}
+												>
+													<span class="">
+														{location.host}/{link.shortName ||
+															link.id}
+													</span>
+													<ExternalLink
+														class="hidden group-hover:block"
+														size={10}
+													/>
+												</a>
+											</div>
+											<div
+												class="text-sm font-semibold text-brand-600"
+											>
+												{performingLink.totalEngagements}
+											</div>
 										</div>
-										<div
-											class="text-sm font-semibold text-brand-600"
-										>
-											{performingLink.totalEngagements}
-										</div>
-									</div>
-								{/if}
-							{/await}
-						{/each}
-					{/await}
+									{/if}
+								{/await}
+							{/each}
+						{/await}
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/if}
 	{/await}
 </div>
