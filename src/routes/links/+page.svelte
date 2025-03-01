@@ -226,12 +226,14 @@
 				{/each}
 
 				{@const totalCount = data.count}
+				{@const pageSize = data.pageSize}
+				{@const page = data.page}
 
 				<!-- Pagination -->
 				<Pagination.Root
 					count={totalCount}
-					perPage={10}
-					page={$activeWorkspaceLinksPageNumber}
+					perPage={pageSize}
+					{page}
 					onPageChange={(newPageNumber) => {
 						$activeWorkspaceLinksPageNumber = newPageNumber
 					}}
