@@ -7,6 +7,7 @@
 		activeWorkspace,
 		activeWorkspaceDefaultApiKey,
 		activeWorkspaceLinks,
+		activeWorkspaceLinksCreatedRefCounter,
 		activeWorkspaceLinksPageNumber,
 		activeWorkspaceLinksSearch,
 		activeWorkspaceLinksSortBy,
@@ -24,9 +25,11 @@
 		EllipsisVertical,
 		ExternalLink,
 		Filter,
+		LoaderCircle,
 		Meh,
 		MousePointerClick,
 		Settings2,
+		Trash2,
 	} from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
@@ -35,13 +38,44 @@
 	import moment from 'moment'
 	import { debounce } from 'lodash-es'
 	import CreateLinkDialog from '$lib/components/CreateLinkDialog.svelte'
+	import * as api from '$lib/utils/api'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
 
+	let loadingLinks = $state<string[]>([])
+
 	const handleSearchInput = debounce(() => {
 		$activeWorkspaceLinksSearch = searchInputValue
 	}, 300)
+
+	async function handleLinkDelete(linkId: string) {
+		try {
+			loadingLinks.push(linkId)
+
+			const { error, data: response } = await api.deleteLink(
+				linkId,
+				$activeWorkspace!.id,
+				(await $activeWorkspaceDefaultApiKey)!.key,
+			)
+
+			if (error || response?.data.error) {
+				toast.error(
+					error?.response?.data.message ||
+						error?.message ||
+						'Something went wrong',
+				)
+				return
+			}
+
+			$activeWorkspaceLinksCreatedRefCounter--
+		} catch (e) {
+			console.error(e)
+			toast.error('Something went wrong')
+		} finally {
+			loadingLinks = loadingLinks.filter((id) => id !== linkId)
+		}
+	}
 </script>
 
 {#snippet LinkFavicon(url: string)}
@@ -94,6 +128,20 @@
 
 		<!-- <hr class="w-full" /> -->
 	</div>
+{/snippet}
+
+{#snippet LinkCardMoreOptionsDialogCardContent(linkId: string)}
+	<DropdownMenu.Group>
+		<DropdownMenu.Item
+			onclick={() => {
+				handleLinkDelete(linkId)
+			}}
+			class="text-destructive"
+		>
+			<Trash2 class="mr-2 size-4" />
+			<span>Delete</span>
+		</DropdownMenu.Item>
+	</DropdownMenu.Group>
 {/snippet}
 
 <CreateLinkDialog bind:open={$isCreateLinkDialogOpen} />
@@ -182,15 +230,28 @@
 				{#each data.links as link}
 					{@const linkHrefWithoutProtocol = `${location.host}/${link.shortName || link.id}`}
 					{@const linkHref = `${location.origin}/${link.shortName || link.id}`}
+					{@const isLoading = loadingLinks.includes(link.id)}
 
 					<div
-						class="group/card flex w-full gap-16 rounded-xl border px-4 py-5 text-sm transition hover:shadow-md"
+						class={cn(
+							'group/card flex w-full gap-16 rounded-xl border px-4 py-5 text-sm transition',
+							isLoading === false && 'hover:shadow-md',
+							isLoading &&
+								'pointer-events-none cursor-wait blur-sm',
+						)}
 					>
 						<div class="flex min-w-0 grow items-center gap-3">
 							<div
 								class="max-h-fit rounded-full border p-2 transition"
 							>
-								{@render LinkFavicon(link.url)}
+								{#if isLoading}
+									<LoaderCircle
+										class="animate-[spin_500ms_linear_infinite]"
+										size={12}
+									/>
+								{:else}
+									{@render LinkFavicon(link.url)}
+								{/if}
 							</div>
 
 							<div
@@ -299,9 +360,9 @@
 									</Button>
 								</DropdownMenu.Trigger>
 								<DropdownMenu.Content>
-									<div class="px-4 py-2 italic">
-										Coming Soon!
-									</div>
+									{@render LinkCardMoreOptionsDialogCardContent(
+										link.id,
+									)}
 								</DropdownMenu.Content>
 							</DropdownMenu.Root>
 						</div>
