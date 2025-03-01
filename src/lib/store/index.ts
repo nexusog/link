@@ -116,6 +116,7 @@ export const activeWorkspaceLinksSortBy =
 		'createdAt',
 	)
 export const activeWorkspaceLinksSearch = writable('')
+export const activeWorkspaceLinksCreatedRefCounter = writable(0)
 
 export const activeWorkspaceLinks = derived(
 	[
@@ -123,8 +124,10 @@ export const activeWorkspaceLinks = derived(
 		activeWorkspaceLinksPageNumber,
 		activeWorkspaceLinksSortBy,
 		activeWorkspaceLinksSearch,
+		activeWorkspaceLinksCreatedRefCounter,
 	],
-	async ([workspace, pageNumber, sortBy, search]) => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	async ([workspace, pageNumber, sortBy, search, _refCounter]) => {
 		if (!workspace) return { error: true }
 
 		const { data: response } = await getLinks(

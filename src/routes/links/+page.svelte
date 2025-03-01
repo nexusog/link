@@ -10,6 +10,7 @@
 		activeWorkspaceLinksPageNumber,
 		activeWorkspaceLinksSearch,
 		activeWorkspaceLinksSortBy,
+		isCreateLinkDialogOpen,
 	} from '$lib/store'
 	import { getLinkStatsCount } from '$lib/utils/api'
 	import { cn } from '$lib/utils/shadcn'
@@ -33,6 +34,7 @@
 	import * as Select from '$lib/components/ui/select'
 	import moment from 'moment'
 	import { debounce } from 'lodash-es'
+	import CreateLinkDialog from '$lib/components/CreateLinkDialog.svelte'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
@@ -94,6 +96,8 @@
 	</div>
 {/snippet}
 
+<CreateLinkDialog bind:open={$isCreateLinkDialogOpen} />
+
 <div class="flex flex-grow flex-col gap-4">
 	<h1 class="text-2xl font-semibold">Links</h1>
 	<div class="my-1"></div>
@@ -140,7 +144,10 @@
 				class="h-full w-64"
 				placeholder="Search..."
 			/>
-			<Button size="lg" class="w-fit px-5"
+			<Button
+				size="lg"
+				class="w-fit px-5"
+				onclick={() => ($isCreateLinkDialogOpen = true)}
 				>Create link
 				<KeyboardShortcut>C</KeyboardShortcut>
 			</Button>
