@@ -74,10 +74,6 @@
 	// If we find active workspace invalid, we set active to null
 	$effect(() => {
 		;(async () => {
-			console.log(
-				'await $isActiveWorkspaceValid?',
-				await $isActiveWorkspaceValid,
-			)
 			if ((await $isActiveWorkspaceValid) === false) {
 				$activeWorkspaceId = null
 			}

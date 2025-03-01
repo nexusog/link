@@ -168,7 +168,6 @@ export function createLink(
 		shortName?: string
 	},
 ) {
-	console.log('data?', data)
 	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
 		client.post(
 			'/links',
