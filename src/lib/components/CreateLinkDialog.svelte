@@ -66,8 +66,6 @@
 	async function handleCreateLink(event: SubmitEvent) {
 		event.preventDefault()
 
-		console.log(values)
-
 		if (values.url.trim().length === 0) {
 			toast.error('Please enter a valid URL')
 			return
