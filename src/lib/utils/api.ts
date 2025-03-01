@@ -158,3 +158,31 @@ export function getLinkStats(
 		}),
 	)
 }
+
+export function createLink(
+	workspaceId: string,
+	apiKey: string,
+	data: {
+		url: string
+		title: string
+		shortName?: string
+	},
+) {
+	console.log('data?', data)
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.post(
+			'/links',
+			{
+				url: data.url,
+				shortName: data.shortName ? data.shortName : undefined,
+				title: data.title,
+			},
+			{
+				headers: {
+					'x-workspace-id': workspaceId,
+					'x-api-key': apiKey,
+				},
+			},
+		),
+	)
+}
