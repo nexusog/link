@@ -96,12 +96,12 @@
 												class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-brand-600 hover:underline"
 												href={`${location.origin}/${link.shortName || link.id}`}
 											>
-												<span>
+												<span class="">
 													{location.host}/{link.shortName ||
 														link.id}
 												</span>
 												<ExternalLink
-													class="hidden  group-hover:block"
+													class="hidden group-hover:block"
 													size={10}
 												/>
 											</a>

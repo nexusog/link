@@ -115,14 +115,16 @@ export const activeWorkspaceLinksSortBy =
 	writable<Required<NonNullable<Parameters<typeof getLinks>[2]>>['sortBy']>(
 		'createdAt',
 	)
+export const activeWorkspaceLinksSearch = writable('')
 
 export const activeWorkspaceLinks = derived(
 	[
 		activeWorkspace,
 		activeWorkspaceLinksPageNumber,
 		activeWorkspaceLinksSortBy,
+		activeWorkspaceLinksSearch,
 	],
-	async ([workspace, pageNumber, sortBy]) => {
+	async ([workspace, pageNumber, sortBy, search]) => {
 		if (!workspace) return { error: true }
 
 		const { data: response } = await getLinks(
@@ -131,6 +133,7 @@ export const activeWorkspaceLinks = derived(
 			{
 				page: pageNumber.toString(),
 				sortBy,
+				search,
 			},
 		)
 

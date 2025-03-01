@@ -8,6 +8,7 @@
 		activeWorkspaceDefaultApiKey,
 		activeWorkspaceLinks,
 		activeWorkspaceLinksPageNumber,
+		activeWorkspaceLinksSearch,
 		activeWorkspaceLinksSortBy,
 	} from '$lib/store'
 	import { getLinkStatsCount } from '$lib/utils/api'
@@ -31,8 +32,14 @@
 	import * as Pagination from '$lib/components/ui/pagination'
 	import * as Select from '$lib/components/ui/select'
 	import moment from 'moment'
+	import { debounce } from 'lodash-es'
 
 	let isDisplayDropdownOpen = $state(false)
+	let searchInputValue = $state('')
+
+	const handleSearchInput = debounce(() => {
+		$activeWorkspaceLinksSearch = searchInputValue
+	}, 300)
 </script>
 
 {#snippet LinkFavicon(url: string)}
@@ -127,7 +134,12 @@
 			</DropdownMenu.Root>
 		</div>
 		<div class="flex justify-center gap-2">
-			<Input class="h-full w-64" placeholder="Search..." />
+			<Input
+				bind:value={searchInputValue}
+				oninput={handleSearchInput}
+				class="h-full w-64"
+				placeholder="Search..."
+			/>
 			<Button size="lg" class="w-fit px-5"
 				>Create link
 				<KeyboardShortcut>C</KeyboardShortcut>

@@ -98,6 +98,7 @@ export function getLinks(
 		page?: string
 		pageSize?: string
 		sortBy?: 'createdAt' | 'totalRedirects'
+		search?: string
 	},
 ) {
 	const queryParams = new URLSearchParams()
@@ -112,6 +113,10 @@ export function getLinks(
 
 	if (options?.sortBy) {
 		queryParams.append('sortBy', options.sortBy)
+	}
+
+	if (options?.search) {
+		queryParams.append('search', options.search)
 	}
 
 	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
