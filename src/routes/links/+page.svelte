@@ -8,7 +8,7 @@
 		activeWorkspaceDefaultApiKey,
 		activeWorkspaceLinks,
 	} from '$lib/store'
-	import { getLinkStats } from '$lib/utils/api'
+	import { getLinkStatsCount } from '$lib/utils/api'
 	import { cn } from '$lib/utils/shadcn'
 	import {
 		ChevronDown,
@@ -166,17 +166,16 @@
 						<div class="flex items-center gap-4">
 							{#await $activeWorkspaceDefaultApiKey then defaultApiKey}
 								{#if defaultApiKey}
-									{#await getLinkStats(link.id, $activeWorkspace!.id, defaultApiKey.key)}
+									{#await getLinkStatsCount(link.id, $activeWorkspace!.id, defaultApiKey.key)}
 										<!--  -->
 										<Skeleton
-											class="h-[30px] w-[100px] rounded"
+											class="h-[30px] w-[90px] rounded"
 										/>
 									{:then { data: response, error }}
 										{#if !error}
-											{@const engagements =
-												response.data.data.engagements}
 											{@const totalEngagements =
-												engagements.length}
+												response.data.data
+													.totalRedirects}
 											<Button
 												size="sm"
 												class="h-fit gap-1 border bg-secondary/50 p-2 py-1 text-muted-foreground transition hover:text-foreground"

@@ -102,6 +102,21 @@ export function getLinks(workspaceId: string, apiKey: string) {
 	)
 }
 
+export function getLinkStatsCount(
+	linkId: string,
+	workspaceId: string,
+	apiKey: string,
+) {
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.get(`/links/${linkId}/stats/count`, {
+			headers: {
+				'x-workspace-id': workspaceId,
+				'x-api-key': apiKey,
+			},
+		}),
+	)
+}
+
 export function getLinkStats(
 	linkId: string,
 	workspaceId: string,
