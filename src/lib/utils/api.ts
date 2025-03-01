@@ -186,3 +186,18 @@ export function createLink(
 		),
 	)
 }
+
+export function deleteLink(
+	linkId: string,
+	workspaceId: string,
+	apiKey: string,
+) {
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.delete(`/links/${linkId}`, {
+			headers: {
+				'x-workspace-id': workspaceId,
+				'x-api-key': apiKey,
+			},
+		}),
+	)
+}
