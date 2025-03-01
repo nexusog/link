@@ -11,6 +11,7 @@
 		activeWorkspaceLinksPageNumber,
 		activeWorkspaceLinksSearch,
 		activeWorkspaceLinksSortBy,
+		activeWorkspaceLinksWithExtras,
 		isCreateLinkDialogOpen,
 	} from '$lib/store'
 	import { getLinkStatsCount } from '$lib/utils/api'
@@ -234,7 +235,7 @@
 	</div>
 
 	<div class="flex flex-col gap-4">
-		{#await $activeWorkspaceLinks}
+		{#await $activeWorkspaceLinksWithExtras}
 			<Skeleton class="h-[70px] w-full" />
 			<Skeleton class="h-[70px] w-full" />
 			<Skeleton class="h-[70px] w-full" />
@@ -347,37 +348,28 @@
 							</div>
 						</div>
 						<div class="flex items-center gap-4">
-							{#await $activeWorkspaceDefaultApiKey then defaultApiKey}
-								{#if defaultApiKey}
-									{#await getLinkStatsCount(link.id, $activeWorkspace!.id, defaultApiKey.key)}
-										<Skeleton
-											class="h-[30px] w-[90px] rounded"
+							{#await link.statsCount()}
+								<Skeleton class="h-[30px] w-[90px] rounded" />
+							{:then { data: response, error }}
+								{#if !error}
+									{@const totalEngagements =
+										response.data.data.totalRedirects}
+									<Button
+										size="sm"
+										class="h-fit gap-1 border bg-secondary/50 p-2 py-1 text-muted-foreground transition hover:text-foreground"
+										variant="secondary"
+									>
+										<MousePointerClick
+											class={cn(
+												totalEngagements > 0 &&
+													'text-brand-600',
+											)}
+											size={12}
 										/>
-									{:then { data: response, error }}
-										{#if !error}
-											{@const totalEngagements =
-												response.data.data
-													.totalRedirects}
-											<Button
-												size="sm"
-												class="h-fit gap-1 border bg-secondary/50 p-2 py-1 text-muted-foreground transition hover:text-foreground"
-												variant="secondary"
-											>
-												<MousePointerClick
-													class={cn(
-														totalEngagements > 0 &&
-															'text-brand-600',
-													)}
-													size={12}
-												/>
-												<span class="text-sm"
-													>{totalEngagements} clicks</span
-												>
-											</Button>
-										{/if}
-									{/await}
-								{:else}
-									<!-- failed to get default api key -->
+										<span class="text-sm"
+											>{totalEngagements} clicks</span
+										>
+									</Button>
 								{/if}
 							{/await}
 							<DropdownMenu.Root>
