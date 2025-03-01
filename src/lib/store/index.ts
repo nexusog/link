@@ -110,14 +110,19 @@ export const activeWorkspaceStats = derived(
 
 export const isCreateLinkDialogOpen = writable(false)
 
+export const activeWorkspaceLinksPageNumber = writable<number>(1)
+
 export const activeWorkspaceLinks = derived(
-	activeWorkspace,
-	async (workspace) => {
+	[activeWorkspace, activeWorkspaceLinksPageNumber],
+	async ([workspace, pageNumber]) => {
 		if (!workspace) return { error: true }
 
 		const { data: response } = await getLinks(
 			workspace.id,
 			(await get(activeWorkspaceDefaultApiKey))!.key,
+			{
+				page: pageNumber.toString(),
+			},
 		)
 
 		if (!response) return { error: true }

@@ -91,9 +91,26 @@ export function getLinkById(id: string, workspaceId: string, apiKey: string) {
 	)
 }
 
-export function getLinks(workspaceId: string, apiKey: string) {
+export function getLinks(
+	workspaceId: string,
+	apiKey: string,
+	options?: {
+		page?: string
+		pageSize?: string
+	},
+) {
+	const queryParams = new URLSearchParams()
+
+	if (options?.page) {
+		queryParams.append('page', options.page)
+	}
+
+	if (options?.pageSize) {
+		queryParams.append('limit', options.pageSize)
+	}
+
 	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
-		client.get(`/links`, {
+		client.get(`/links?${queryParams.toString()}`, {
 			headers: {
 				'x-workspace-id': workspaceId,
 				'x-api-key': apiKey,
