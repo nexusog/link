@@ -161,6 +161,17 @@
 					</h1>
 				</div>
 			{:else}
+				{#if data.links.length === 0}
+					<div
+						class="flex w-full flex-col items-center gap-1 pt-16 opacity-80"
+					>
+						<Meh size={64} class="text-destructive" />
+						<h1 class="text-xl font-semibold text-destructive">
+							No links found for this search
+						</h1>
+					</div>
+				{/if}
+
 				{#each data.links as link}
 					{@const linkHrefWithoutProtocol = `${location.host}/${link.shortName || link.id}`}
 					{@const linkHref = `${location.origin}/${link.shortName || link.id}`}
@@ -290,55 +301,59 @@
 					</div>
 				{/each}
 
-				{@const totalCount = data.count}
-				{@const pageSize = data.pageSize}
-				{@const page = data.page}
+				{#if data.links.length > 0}
+					{@const totalCount = data.count}
+					{@const pageSize = data.pageSize}
+					{@const page = data.page}
 
-				<!-- Pagination -->
-				<Pagination.Root
-					count={totalCount}
-					perPage={pageSize}
-					{page}
-					onPageChange={(newPageNumber) => {
-						$activeWorkspaceLinksPageNumber = newPageNumber
-					}}
-					class="items-end"
-				>
-					{#snippet children({ pages, currentPage })}
-						<Pagination.Content>
-							<Pagination.Item>
-								<Pagination.PrevButton>
-									<ChevronLeft class="size-4" />
-									<span class="hidden sm:block">Previous</span
-									>
-								</Pagination.PrevButton>
-							</Pagination.Item>
-							{#each pages as page (page.key)}
-								{#if page.type === 'ellipsis'}
-									<Pagination.Item>
-										<Pagination.Ellipsis />
-									</Pagination.Item>
-								{:else}
-									<Pagination.Item>
-										<Pagination.Link
-											{page}
-											isActive={currentPage ===
-												page.value}
+					<!-- Pagination -->
+					<Pagination.Root
+						count={totalCount}
+						perPage={pageSize}
+						{page}
+						onPageChange={(newPageNumber) => {
+							$activeWorkspaceLinksPageNumber = newPageNumber
+						}}
+						class="items-end"
+					>
+						{#snippet children({ pages, currentPage })}
+							<Pagination.Content>
+								<Pagination.Item>
+									<Pagination.PrevButton>
+										<ChevronLeft class="size-4" />
+										<span class="hidden sm:block"
+											>Previous</span
 										>
-											{page.value}
-										</Pagination.Link>
-									</Pagination.Item>
-								{/if}
-							{/each}
-							<Pagination.Item>
-								<Pagination.NextButton>
-									<span class="hidden sm:block">Next</span>
-									<ChevronRight class="size-4" />
-								</Pagination.NextButton>
-							</Pagination.Item>
-						</Pagination.Content>
-					{/snippet}
-				</Pagination.Root>
+									</Pagination.PrevButton>
+								</Pagination.Item>
+								{#each pages as page (page.key)}
+									{#if page.type === 'ellipsis'}
+										<Pagination.Item>
+											<Pagination.Ellipsis />
+										</Pagination.Item>
+									{:else}
+										<Pagination.Item>
+											<Pagination.Link
+												{page}
+												isActive={currentPage ===
+													page.value}
+											>
+												{page.value}
+											</Pagination.Link>
+										</Pagination.Item>
+									{/if}
+								{/each}
+								<Pagination.Item>
+									<Pagination.NextButton>
+										<span class="hidden sm:block">Next</span
+										>
+										<ChevronRight class="size-4" />
+									</Pagination.NextButton>
+								</Pagination.Item>
+							</Pagination.Content>
+						{/snippet}
+					</Pagination.Root>
+				{/if}
 			{/if}
 		{/await}
 	</div>
