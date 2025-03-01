@@ -111,10 +111,18 @@ export const activeWorkspaceStats = derived(
 export const isCreateLinkDialogOpen = writable(false)
 
 export const activeWorkspaceLinksPageNumber = writable<number>(1)
+export const activeWorkspaceLinksSortBy =
+	writable<Required<NonNullable<Parameters<typeof getLinks>[2]>>['sortBy']>(
+		'createdAt',
+	)
 
 export const activeWorkspaceLinks = derived(
-	[activeWorkspace, activeWorkspaceLinksPageNumber],
-	async ([workspace, pageNumber]) => {
+	[
+		activeWorkspace,
+		activeWorkspaceLinksPageNumber,
+		activeWorkspaceLinksSortBy,
+	],
+	async ([workspace, pageNumber, sortBy]) => {
 		if (!workspace) return { error: true }
 
 		const { data: response } = await getLinks(
@@ -122,6 +130,7 @@ export const activeWorkspaceLinks = derived(
 			(await get(activeWorkspaceDefaultApiKey))!.key,
 			{
 				page: pageNumber.toString(),
+				sortBy,
 			},
 		)
 
