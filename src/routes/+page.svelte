@@ -55,7 +55,7 @@
 			</div>
 			{#if data.topPerformingLinks.length > 0}
 				<div
-					class="w-fit min-w-96 space-y-4 rounded border p-4 hover:shadow"
+					class="w-fit min-w-96 max-w-96 space-y-4 rounded border p-4 hover:shadow"
 				>
 					<h2 class="px-2 text-base font-semibold">
 						Top Performing Links
@@ -80,6 +80,13 @@
 										</div>
 									{:else}
 										{@const link = response.data.data}
+										{@const linkHrefWithoutProtocol = `${location.host}/${link.shortName || link.id}`}
+										{@const linkHref = `${location.origin}/${link.shortName || link.id}`}
+										{@const hasTitle =
+											link.title !== null ||
+											link.title !== undefined ||
+											link.title?.trim?.()?.length > 0}
+
 										<div
 											class="flex items-start gap-2 rounded border border-transparent p-2 transition hover:border-brand-600/20 hover:bg-brand-300/5"
 										>
@@ -89,17 +96,40 @@
 											<div
 												class="flex flex-grow flex-col gap-0.5"
 											>
-												<div class="text-sm">
-													{link.title}
-												</div>
+												{#if link.title}
+													<div class="text-sm">
+														{link.title?.trim?.()}
+													</div>
+												{:else}
+													<a
+														href={linkHref}
+														target="_blank"
+														class="group flex items-center gap-1 text-sm hover:text-brand-600 hover:underline"
+														><span
+															class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap"
+														>
+															{linkHrefWithoutProtocol}
+														</span>
+														<ExternalLink
+															class="hidden group-hover:block"
+															size={10}
+														/></a
+													>
+												{/if}
+
 												<a
 													target="_blank"
 													class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-brand-600 hover:underline"
-													href={`${location.origin}/${link.shortName || link.id}`}
+													href={link.title
+														? linkHref
+														: link.url}
 												>
-													<span class="">
-														{location.host}/{link.shortName ||
-															link.id}
+													<span
+														class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap"
+													>
+														{link.title
+															? linkHrefWithoutProtocol
+															: link.url}
 													</span>
 													<ExternalLink
 														class="hidden group-hover:block"

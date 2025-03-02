@@ -317,6 +317,35 @@
 										<Copy size={11} />
 									</Button>
 								</div>
+								{#if link.title}
+									<div
+										class="flex min-w-0 items-center gap-1 text-muted-foreground"
+									>
+										<div>
+											<CornerDownRight
+												size={12}
+												strokeWidth={1}
+											/>
+										</div>
+										<div
+											class="group flex items-center gap-1 overflow-hidden hover:text-brand-600 hover:underline"
+										>
+											<a
+												class="max-w-[50ch] overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
+												href={linkHref}
+												target="_blank"
+												rel="noreferrer"
+											>
+												{linkHrefWithoutProtocol}
+											</a>
+
+											<ExternalLink
+												size={12}
+												class="hidden group-hover:block"
+											/>
+										</div>
+									</div>
+								{/if}
 								<div
 									class="flex min-w-0 items-center gap-1 text-muted-foreground"
 								>
