@@ -164,7 +164,7 @@ export function createLink(
 	apiKey: string,
 	data: {
 		url: string
-		title: string
+		// title: string
 		shortName?: string
 	},
 ) {
@@ -174,7 +174,7 @@ export function createLink(
 			{
 				url: data.url,
 				shortName: data.shortName ? data.shortName : undefined,
-				title: data.title,
+				// title: data.title,
 			},
 			{
 				headers: {

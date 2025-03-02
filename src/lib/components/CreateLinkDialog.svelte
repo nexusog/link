@@ -29,7 +29,7 @@
 	let values = $state({
 		url: '',
 		shortName: '',
-		title: '',
+		// title: '',
 	})
 
 	async function getPageTitle(url: string | URL) {
@@ -52,15 +52,15 @@
 	const handleURLInput = debounce(async () => {
 		if (!values.url.trim()) return
 
-		const url =
-			`https://thingproxy.freeboard.io/fetch/` +
-			encodeURIComponent(values.url)
+		// const url =
+		// 	`https://thingproxy.freeboard.io/fetch/` +
+		// 	encodeURIComponent(values.url)
 
-		const title = await getPageTitle(url)
+		// const title = await getPageTitle(url)
 
-		if (title) {
-			values.title = title
-		}
+		// if (title) {
+		// 	values.title = title
+		// }
 	}, 300)
 
 	async function handleCreateLink(event: SubmitEvent) {
@@ -93,7 +93,7 @@
 
 			open = false
 			values.url = ''
-			values.title = ''
+			// values.title = ''
 			values.shortName = ''
 		} catch (error) {
 			toast.error('Something went wrong')
@@ -150,7 +150,7 @@
 					</div>
 				</div>
 
-				<div class="flex w-full flex-col gap-1.5">
+				<!-- <div class="flex w-full flex-col gap-1.5">
 					<Label for="title">Title</Label>
 					<Input
 						disabled={isLoading}
@@ -160,7 +160,7 @@
 						placeholder="My Example Website"
 						required
 					/>
-				</div>
+				</div> -->
 
 				<div class="flex w-full justify-end">
 					<Button disabled={isLoading} type="submit" size="sm">
