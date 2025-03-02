@@ -290,13 +290,19 @@
 								class="flex max-w-full flex-col gap-0 overflow-hidden"
 							>
 								<div class="flex items-center gap-3">
-									<a
-										href={linkHref}
-										target="_blank"
-										class="font-semibold"
-									>
-										{linkHrefWithoutProtocol}
-									</a>
+									{#if link.title}
+										<span class="font-semibold">
+											{link.title}
+										</span>
+									{:else}
+										<a
+											href={linkHref}
+											target="_blank"
+											class="font-semibold"
+										>
+											{linkHrefWithoutProtocol}
+										</a>
+									{/if}
 									<Button
 										variant="ghost"
 										size="sm"
