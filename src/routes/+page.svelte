@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Link from '$lib/components/Link.svelte'
 	import Skeleton from '$lib/components/ui/skeleton/skeleton.svelte'
 	import {
 		activeWorkspace,
@@ -103,41 +104,24 @@
 														{link.title?.trim?.()}
 													</div>
 												{:else}
-													<a
+													<Link
 														href={linkHref}
-														target="_blank"
-														class="group flex items-center gap-1 text-sm hover:text-brand-600 hover:underline"
-														><span
-															class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap"
-														>
-															{linkHrefWithoutProtocol}
-														</span>
-														<ExternalLink
-															class="hidden group-hover:block"
-															size={10}
-														/></a
+														class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
 													>
+														{linkHrefWithoutProtocol}
+													</Link>
 												{/if}
 
-												<a
-													target="_blank"
-													class="group flex items-center gap-1 text-xs text-muted-foreground hover:text-brand-600 hover:underline"
+												<Link
 													href={link.title
 														? linkHref
 														: link.url}
+													class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap text-sm tracking-tighter text-muted-foreground"
 												>
-													<span
-														class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap"
-													>
-														{link.title
-															? linkHrefWithoutProtocol
-															: link.url}
-													</span>
-													<ExternalLink
-														class="hidden group-hover:block"
-														size={10}
-													/>
-												</a>
+													{link.title
+														? linkHrefWithoutProtocol
+														: link.url}
+												</Link>
 											</div>
 											<div
 												class="text-sm font-semibold text-brand-600"

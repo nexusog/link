@@ -40,6 +40,7 @@
 	import { debounce } from 'lodash-es'
 	import CreateLinkDialog from '$lib/components/CreateLinkDialog.svelte'
 	import * as api from '$lib/utils/api'
+	import Link from '$lib/components/Link.svelte'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
@@ -295,27 +296,13 @@
 											{link.title}
 										</span>
 									{:else}
-										<a
-											href={linkHref}
-											target="_blank"
+										<Link
 											class="font-semibold"
+											href={linkHref}
 										>
 											{linkHrefWithoutProtocol}
-										</a>
+										</Link>
 									{/if}
-									<Button
-										variant="ghost"
-										size="sm"
-										class="h-fit p-1.5"
-										onclick={() => {
-											navigator.clipboard.writeText(
-												linkHref,
-											)
-											toast.info('Copied to Clipboard')
-										}}
-									>
-										<Copy size={11} />
-									</Button>
 								</div>
 								{#if link.title}
 									<div
@@ -327,23 +314,9 @@
 												strokeWidth={1}
 											/>
 										</div>
-										<div
-											class="group flex items-center gap-1 overflow-hidden hover:text-brand-600 hover:underline"
-										>
-											<a
-												class="max-w-[50ch] overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
-												href={linkHref}
-												target="_blank"
-												rel="noreferrer"
-											>
-												{linkHrefWithoutProtocol}
-											</a>
-
-											<ExternalLink
-												size={12}
-												class="hidden group-hover:block"
-											/>
-										</div>
+										<Link href={linkHref}>
+											{linkHrefWithoutProtocol}
+										</Link>
 									</div>
 								{/if}
 								<div
@@ -355,30 +328,13 @@
 											strokeWidth={1}
 										/>
 									</div>
-									<div
-										class="group flex items-center gap-1 overflow-hidden hover:text-brand-600 hover:underline"
-									>
-										<a
-											class="max-w-[50ch] overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
-											href={link.url}
-											target="_blank"
-											rel="noreferrer"
-										>
-											{link.url}
-										</a>
 
-										<ExternalLink
-											size={12}
-											class="hidden group-hover:block"
-										/>
-									</div>
-									<div
-										class="ml-2 hidden text-xs group-hover/card:block"
+									<Link
+										href={link.url}
+										class="max-w-[50ch] overflow-hidden text-ellipsis whitespace-nowrap tracking-tighter"
 									>
-										{moment(link.createdAt).format(
-											'MMM D, YYYY',
-										)}
-									</div>
+										{link.url}
+									</Link>
 								</div>
 							</div>
 						</div>
