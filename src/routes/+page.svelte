@@ -97,7 +97,9 @@
 												class="flex flex-grow flex-col gap-0.5"
 											>
 												{#if link.title}
-													<div class="text-sm">
+													<div
+														class="max-w-[30ch] overflow-hidden text-ellipsis whitespace-nowrap text-sm"
+													>
 														{link.title?.trim?.()}
 													</div>
 												{:else}
