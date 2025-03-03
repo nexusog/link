@@ -30,8 +30,7 @@
 					<Skeleton class="h-[60px] w-full" />
 				{:then workspaces}
 					{#each workspaces as workspace}
-						{@const isCurrent =
-							workspace.id === $activeWorkspace?.id}
+						{@const isCurrent = workspace.id === $activeWorkspaceId}
 						<button
 							onclick={() => {
 								if (workspace.isValid === false) return

@@ -5,6 +5,7 @@ import {
 	getApiKeys,
 	getLinks,
 	getLinkStatsCount,
+	getWorkspace,
 	getWorkspaceStats,
 } from '$lib/utils/api'
 import { DEFAULT_API_KEY_LABEL } from '$lib/const'
@@ -48,16 +49,36 @@ export const activeWorkspaceId = persisted<string | null>(
 	},
 )
 
-export const activeWorkspace = derived(activeWorkspaceId, (id) => {
-	return get(workspaces).find((workspace) => workspace.id === id) || null
+export const activeWorkspace = derived(activeWorkspaceId, async (id) => {
+	const workspaceObject =
+		get(workspaces).find((workspace) => workspace.id === id) || null
+
+	if (!workspaceObject) return null
+
+	const { data: response, error } = await getWorkspace(
+		workspaceObject.id,
+		workspaceObject.secret,
+	)
+
+	console.log(response)
+
+	if (error) return null
+
+	return {
+		...workspaceObject,
+		name: response.data.data.name,
+	}
 })
 
 export const isActiveWorkspaceValid = derived(
 	activeWorkspace,
 	async (workspace) => {
-		if (!workspace) return false
+		if (!(await workspace)) return false
 
-		return await isWorkspaceValid(workspace?.id, workspace?.secret)
+		return await isWorkspaceValid(
+			(await workspace)!.id,
+			(await workspace)!.secret,
+		)
 	},
 )
 
@@ -73,11 +94,11 @@ export const isImportWorkspaceDialogOpen = writable(false)
 export const activeWorkspaceApiKeys = derived(
 	activeWorkspace,
 	async (workspace): Promise<ApiKey[]> => {
-		if (!workspace) return []
+		if (!(await workspace)) return []
 
 		const { data: response } = await getApiKeys(
-			workspace.id,
-			workspace.secret,
+			(await workspace)!.id,
+			(await workspace)!.secret,
 		)
 
 		if (!response) return []
@@ -98,11 +119,11 @@ export const activeWorkspaceDefaultApiKey = derived(
 export const activeWorkspaceStats = derived(
 	activeWorkspace,
 	async (workspace) => {
-		if (!workspace) return null
+		if (!(await workspace)) return null
 
 		const { data: response } = await getWorkspaceStats(
-			workspace.id,
-			workspace.secret,
+			(await workspace)!.id,
+			(await workspace)!.secret,
 		)
 
 		if (!response) return null
@@ -137,7 +158,7 @@ export const activeWorkspaceLinks = derived(
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_refCounter,
 	]) => {
-		if (!workspace) return { error: true }
+		if (!(await workspace)) return { error: true }
 
 		if ((await get(isActiveWorkspaceValid)) === false)
 			return { error: true }
@@ -146,7 +167,7 @@ export const activeWorkspaceLinks = derived(
 			return { error: true }
 
 		const { data: response } = await getLinks(
-			workspace!.id,
+			(await workspace)!.id,
 			(await get(activeWorkspaceDefaultApiKey))!.key,
 			{
 				page: pageNumber.toString(),

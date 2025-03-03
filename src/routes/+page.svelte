@@ -4,6 +4,7 @@
 	import {
 		activeWorkspace,
 		activeWorkspaceDefaultApiKey,
+		activeWorkspaceId,
 		activeWorkspaceStats,
 	} from '$lib/store'
 	import { getLinkById, getWorkspaceStats } from '$lib/utils/api'
@@ -72,7 +73,7 @@
 							{@render Skels()}
 						{:then apiKey}
 							{#each data.topPerformingLinks as performingLink, index}
-								{#await getLinkById(performingLink.id, $activeWorkspace!.id, apiKey!.key)}
+								{#await getLinkById(performingLink.id, $activeWorkspaceId!, apiKey!.key)}
 									<Skeleton class="h-[40px] w-full" />
 								{:then { data: response, error }}
 									{#if error || !response?.data?.data}
