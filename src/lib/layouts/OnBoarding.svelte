@@ -387,21 +387,12 @@
 			<div class="flex gap-2">
 				{#each steps as _, i}
 					{@const isDone = step >= i}
-					{@const disable = step === 2}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
-						role="button"
-						tabindex={isDone ? -1 : 0}
 						aria-label="Step {i + 1}"
-						onclick={() => {
-							if (disable === false) {
-								step = i
-							}
-						}}
 						class={cn(
 							'h-2 w-8 rounded-full bg-muted-foreground',
 							isDone && 'bg-brand-600',
-							disable && 'cursor-not-allowed',
 						)}
 					></div>
 				{/each}
