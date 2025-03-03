@@ -63,7 +63,7 @@
 		$workspaces = [
 			...$workspaces,
 			{
-				name: createWorkspaceName.trim(),
+				name: createWorkspaceName,
 				id: workspaceId,
 				secret: workspaceSecret,
 			},

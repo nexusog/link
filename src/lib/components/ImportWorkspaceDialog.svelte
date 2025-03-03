@@ -46,18 +46,16 @@
 		$workspaces = [
 			...$workspaces,
 			{
-				name: workspaceName,
 				id: workspaceId,
 				secret: workspaceSecret,
+				name: workspaceName,
 			},
 		]
 
 		workspaceIdValue = ''
 		workspaceSecretValue = ''
 
-		if ($activeWorkspaceId === null) {
-			$activeWorkspaceId = workspaceId
-		}
+		$activeWorkspaceId = workspaceId
 		tick()
 
 		open = false

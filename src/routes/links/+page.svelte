@@ -6,6 +6,7 @@
 	import {
 		activeWorkspace,
 		activeWorkspaceDefaultApiKey,
+		activeWorkspaceId,
 		activeWorkspaceLinks,
 		activeWorkspaceLinksCreatedRefCounter,
 		activeWorkspaceLinksPageNumber,
@@ -58,7 +59,7 @@
 
 			const { error, data: response } = await api.deleteLink(
 				linkId,
-				$activeWorkspace!.id,
+				$activeWorkspaceId!,
 				(await $activeWorkspaceDefaultApiKey)!.key,
 			)
 

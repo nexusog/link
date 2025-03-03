@@ -220,10 +220,14 @@
 						<span>
 							{#if $hasNoWorkspaces}
 								Create Workspace
-							{:else if $hasNoWorkspaces === false && $activeWorkspace === null}
+							{:else if $hasNoWorkspaces === false && $activeWorkspaceId === null}
 								<span>Select a Workspace</span>
 							{:else}
-								{$activeWorkspace?.name}
+								{#await $activeWorkspace}
+									<Skeleton class="h-full w-[100px]" />
+								{:then workspace}
+									{workspace?.name}
+								{/await}
 							{/if}
 						</span>
 					{/if}
@@ -303,7 +307,7 @@
 				'Create workspace to Get Started',
 				CreateWorkspaceButton,
 			)}
-		{:else if $hasNoWorkspaces === false && $activeWorkspace === null}
+		{:else if $hasNoWorkspaces === false && $activeWorkspaceId === null}
 			{#snippet SelectWorkspaceButton()}
 				<Button
 					onclick={() => {
