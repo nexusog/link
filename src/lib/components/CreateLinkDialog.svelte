@@ -131,7 +131,7 @@
 					{/snippet}
 
 					{#snippet description()}
-						Tries to prevents accidental or repeated clicks from
+						Tries to prevent accidental or repeated clicks from
 						being counted multiple times.
 					{/snippet}
 				</InformativeSwitch>
