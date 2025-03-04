@@ -164,8 +164,8 @@ export function createLink(
 	apiKey: string,
 	data: {
 		url: string
-		// title: string
 		shortName?: string
+		smartEngagementCounting: boolean
 	},
 ) {
 	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
@@ -174,7 +174,7 @@ export function createLink(
 			{
 				url: data.url,
 				shortName: data.shortName ? data.shortName : undefined,
-				// title: data.title,
+				smartEngagementCounting: data.smartEngagementCounting ?? false,
 			},
 			{
 				headers: {

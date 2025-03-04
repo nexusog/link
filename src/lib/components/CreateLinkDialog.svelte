@@ -17,6 +17,7 @@
 	import { debounce } from 'lodash-es'
 	import { LoaderCircle } from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
+	import InformativeSwitch from './InformativeSwitch.svelte'
 
 	type Props = {
 		open: boolean
@@ -29,39 +30,8 @@
 	let values = $state({
 		url: '',
 		shortName: '',
-		// title: '',
+		smartEngagementCounting: false,
 	})
-
-	async function getPageTitle(url: string | URL) {
-		try {
-			const response = await fetch(url)
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`)
-			}
-			const html = await response.text()
-			const parser = new DOMParser()
-			const doc = parser.parseFromString(html, 'text/html')
-			const title = doc.querySelector('title')?.textContent || null
-			return title
-		} catch (error) {
-			console.error('Error fetching or parsing the page:', error)
-			return null
-		}
-	}
-
-	const handleURLInput = debounce(async () => {
-		if (!values.url.trim()) return
-
-		// const url =
-		// 	`https://thingproxy.freeboard.io/fetch/` +
-		// 	encodeURIComponent(values.url)
-
-		// const title = await getPageTitle(url)
-
-		// if (title) {
-		// 	values.title = title
-		// }
-	}, 300)
 
 	async function handleCreateLink(event: SubmitEvent) {
 		event.preventDefault()
@@ -93,8 +63,8 @@
 
 			open = false
 			values.url = ''
-			// values.title = ''
 			values.shortName = ''
+			values.smartEngagementCounting = false
 		} catch (error) {
 			toast.error('Something went wrong')
 		} finally {
@@ -122,7 +92,6 @@
 						bind:value={values.url}
 						placeholder="https://example.com"
 						required
-						oninput={handleURLInput}
 					/>
 				</div>
 
@@ -135,6 +104,7 @@
 						bind:value={values.shortName}
 						placeholder="my-expl-site"
 						pattern="[a-zA-Z0-9-]+"
+						maxlength={50}
 					/>
 					<div
 						class={cn(
@@ -150,17 +120,21 @@
 					</div>
 				</div>
 
-				<!-- <div class="flex w-full flex-col gap-1.5">
-					<Label for="title">Title</Label>
-					<Input
-						disabled={isLoading}
-						type="text"
-						id="title"
-						bind:value={values.title}
-						placeholder="My Example Website"
-						required
-					/>
-				</div> -->
+				<InformativeSwitch
+					bind:checked={values.smartEngagementCounting}
+				>
+					{#snippet title()}
+						<span>Smart Engagement Counting</span>
+						<span class="text-xs font-semibold text-brand-700"
+							>(BETA)</span
+						>
+					{/snippet}
+
+					{#snippet description()}
+						Tries to prevents accidental or repeated clicks from
+						being counted multiple times.
+					{/snippet}
+				</InformativeSwitch>
 
 				<div class="flex w-full justify-end">
 					<Button disabled={isLoading} type="submit" size="sm">
