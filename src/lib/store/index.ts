@@ -4,6 +4,7 @@ import { derived, get, writable } from 'svelte/store'
 import {
 	getApiKeys,
 	getLinks,
+	getLinkStats,
 	getLinkStatsCount,
 	getWorkspace,
 	getWorkspaceStats,
@@ -200,6 +201,7 @@ export const activeWorkspaceLinksWithExtras = derived(
 					...link,
 					statsCount: () =>
 						getLinkStatsCount(link.id, workspaceId, apiKey),
+					stats: () => getLinkStats(link.id, workspaceId, apiKey),
 				})),
 			},
 		}

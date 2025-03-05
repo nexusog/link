@@ -42,6 +42,8 @@
 	import Link from '$lib/components/Link.svelte'
 	import * as Dialog from '$lib/components/ui/dialog'
 	import QRCodeGenerator from 'qrcode'
+	import MiniLinkClicksChart from '$lib/components/MiniLinkClicksChart.svelte'
+	import { transformEngagementsIntoDateCount } from '$lib/utils/transformEngagements'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
@@ -383,6 +385,20 @@
 							</div>
 						</div>
 						<div class="flex items-center gap-4">
+							{#await link.stats() then statsResponse}
+								{@const engagements =
+									statsResponse.data.data.data.engagements}
+								{@const transformedEngagements =
+									transformEngagementsIntoDateCount(
+										engagements,
+									)}
+								{#if transformedEngagements.length > 1}
+									<MiniLinkClicksChart
+										data={transformedEngagements}
+									/>
+								{/if}
+							{/await}
+
 							{#await link.statsCount()}
 								<Skeleton class="h-[30px] w-[90px] rounded" />
 							{:then { data: response, error }}
