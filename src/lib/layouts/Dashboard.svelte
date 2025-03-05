@@ -31,6 +31,7 @@
 	import WorkspaceSwitcherDialog from '$lib/components/WorkspaceSwitcherDialog.svelte'
 	import ImportWorkspaceDialog from '$lib/components/ImportWorkspaceDialog.svelte'
 	import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
+	import ExportWorkspaceButton from '$lib/components/ExportWorkspaceButton.svelte'
 
 	type Props = {
 		children: Snippet
@@ -247,6 +248,12 @@
 		{@render SidebarHeader()}
 		{@render SidebarWorkspaceSelector()}
 		{@render SidebarRoutes()}
+
+		{#if $activeWorkspaceId !== null}
+			<div class="px-4">
+				<ExportWorkspaceButton />
+			</div>
+		{/if}
 	</div>
 {/snippet}
 
