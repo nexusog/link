@@ -61,8 +61,6 @@ export const activeWorkspace = derived(activeWorkspaceId, async (id) => {
 		workspaceObject.secret,
 	)
 
-	console.log(response)
-
 	if (error) return null
 
 	return {
