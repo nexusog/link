@@ -4,10 +4,8 @@
 	import { Input } from '$lib/components/ui/input'
 	import { Skeleton } from '$lib/components/ui/skeleton'
 	import {
-		activeWorkspace,
 		activeWorkspaceDefaultApiKey,
 		activeWorkspaceId,
-		activeWorkspaceLinks,
 		activeWorkspaceLinksCreatedRefCounter,
 		activeWorkspaceLinksPageNumber,
 		activeWorkspaceLinksSearch,
@@ -30,6 +28,7 @@
 		LoaderCircle,
 		Meh,
 		MousePointerClick,
+		QrCode,
 		Settings2,
 		Trash2,
 	} from 'lucide-svelte'
@@ -37,14 +36,17 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
 	import * as Pagination from '$lib/components/ui/pagination'
 	import * as Select from '$lib/components/ui/select'
-	import moment from 'moment'
 	import { debounce } from 'lodash-es'
 	import CreateLinkDialog from '$lib/components/CreateLinkDialog.svelte'
 	import * as api from '$lib/utils/api'
 	import Link from '$lib/components/Link.svelte'
+	import * as Dialog from '$lib/components/ui/dialog'
+	import QRCodeGenerator from 'qrcode'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
+	let showQRCodeDialog = $state(false)
+	let QRCodeDialogLinkId = $state<string | null>(null)
 
 	let loadingLinks = $state<string[]>([])
 	let searchLinksInputRef = $state<HTMLElement | null>(null)
@@ -167,17 +169,58 @@
 	<DropdownMenu.Group>
 		<DropdownMenu.Item
 			onclick={() => {
+				showQRCodeDialog = true
+				QRCodeDialogLinkId = linkId
+			}}
+		>
+			<QrCode class="mr-1 size-4" />
+			<span>Show QR Code</span>
+		</DropdownMenu.Item>
+		<DropdownMenu.Item
+			onclick={() => {
 				handleLinkDelete(linkId)
 			}}
 			class="text-destructive"
 		>
-			<Trash2 class="mr-2 size-4" />
+			<Trash2 class="mr-1 size-4" />
 			<span>Delete</span>
 		</DropdownMenu.Item>
 	</DropdownMenu.Group>
 {/snippet}
 
+{#snippet LinkQRCodeDialog()}
+	<Dialog.Root bind:open={showQRCodeDialog}>
+		<Dialog.Content class="w-[300px]">
+			<Dialog.Header>
+				<Dialog.Title>QR Code</Dialog.Title>
+			</Dialog.Header>
+
+			<div class="flex w-full items-center justify-center py-2">
+				{#await $activeWorkspaceLinksWithExtras}
+					<Skeleton class="aspect-square h-[200px]" />
+				{:then { data }}
+					{@const link = data.links.find(
+						(e: any) => e.id === QRCodeDialogLinkId,
+					)}
+					{@const linkHref = `${location.origin}/${link.shortName || link.id}?qr`}
+
+					{#await QRCodeGenerator.toDataURL( linkHref, { width: 200, margin: 0, scale: 16 }, ) then dataURL}
+						<img
+							title={linkHref}
+							src={dataURL}
+							class="aspect-square rounded"
+							alt=""
+						/>
+					{/await}
+				{/await}
+			</div>
+		</Dialog.Content>
+	</Dialog.Root>
+{/snippet}
+
 <CreateLinkDialog bind:open={$isCreateLinkDialogOpen} />
+
+{@render LinkQRCodeDialog()}
 
 <div class="flex flex-grow flex-col gap-4">
 	<h1 class="text-2xl font-semibold">Links</h1>
