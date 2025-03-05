@@ -5,6 +5,7 @@
 	import { Label } from '$lib/components/ui/label'
 	import { Input } from '$lib/components/ui/input'
 	import { activeWorkspace, activeWorkspaceId, workspaces } from '$lib/store'
+	import { toast } from 'svelte-sonner'
 
 	let showDialog = $state(false)
 </script>
@@ -31,9 +32,10 @@
 				/>
 			</div>
 			<Button
-				onclick={() =>
-					navigator.clipboard.writeText($activeWorkspaceId!)}
-				><Copy /></Button
+				onclick={() => {
+					navigator.clipboard.writeText($activeWorkspaceId!)
+					toast.info('Copied to clipboard')
+				}}><Copy /></Button
 			>
 		</div>
 
@@ -51,9 +53,10 @@
 					/>
 				</div>
 				<Button
-					onclick={() =>
-						navigator.clipboard.writeText(workspace!.secret)}
-					><Copy /></Button
+					onclick={() => {
+						navigator.clipboard.writeText(workspace!.secret)
+						toast.info('Copied to clipboard')
+					}}><Copy /></Button
 				>
 			</div>
 		{/await}
