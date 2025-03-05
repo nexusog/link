@@ -37,10 +37,10 @@
 			>
 		</div>
 
-		<div class="flex items-end gap-1">
-			<div class="flex w-full flex-col gap-1.5">
-				<Label for="secret">Workspace Secret</Label>
-				{#await $activeWorkspace then workspace}
+		{#await $activeWorkspace then workspace}
+			<div class="flex items-end gap-1">
+				<div class="flex w-full flex-col gap-1.5">
+					<Label for="secret">Workspace Secret</Label>
 					<Input
 						type="text"
 						id="secret"
@@ -49,14 +49,14 @@
 						placeholder="abcd123"
 						bind:value={workspace!.secret}
 					/>
-				{/await}
+				</div>
+				<Button
+					onclick={() =>
+						navigator.clipboard.writeText(workspace!.secret)}
+					><Copy /></Button
+				>
 			</div>
-			<Button
-				onclick={() =>
-					navigator.clipboard.writeText($activeWorkspaceId!)}
-				><Copy /></Button
-			>
-		</div>
+		{/await}
 	</Dialog.Content>
 </Dialog.Root>
 
