@@ -50,7 +50,7 @@
 			},
 		},
 		points: {
-			enabled: false,
+			enabled: true,
 		},
 		toolbar: {
 			enabled: false,
@@ -58,6 +58,7 @@
 		legend: {
 			enabled: false,
 		},
+		curve: 'curveMonotoneX',
 	}
 </script>
 
