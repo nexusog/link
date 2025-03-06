@@ -44,6 +44,7 @@
 	import QRCodeGenerator from 'qrcode'
 	import MiniLinkClicksChart from '$lib/components/MiniLinkClicksChart.svelte'
 	import { transformEngagementsIntoDateCount } from '$lib/utils/transformEngagements'
+	import moment from 'moment'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
@@ -381,6 +382,14 @@
 									>
 										{link.url}
 									</Link>
+
+									<div
+										class="ml-2 hidden text-xs group-hover/card:block"
+									>
+										{moment(link.createdAt).format(
+											'MMM D, YYYY',
+										)}
+									</div>
 								</div>
 							</div>
 						</div>
