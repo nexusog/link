@@ -10,8 +10,10 @@ export function transformEngagementsIntoDateCount(
 		map.set(dateStr, (map.get(dateStr) || 0) + 1)
 	}
 
-	return Array.from(map.entries()).map(([dateStr, count]) => [
-		new Date(dateStr),
-		count,
-	])
+	return (
+		Array.from(map.entries()).map(([dateStr, count]) => [
+			new Date(dateStr),
+			count,
+		]) as [Date, number][]
+	).sort((a, b) => a[0].getTime() - b[0].getTime())
 }
