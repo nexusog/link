@@ -12,6 +12,14 @@
 
 	let { data }: Props = $props()
 
+	let formattedData = $derived(
+		data.map((d) => ({
+			date: d[0].toISOString(),
+			clicks: d[1],
+			group: 'Total Clicks',
+		})),
+	)
+
 	const options: AreaChartOptions = {
 		width: '150px',
 		grid: {
@@ -32,7 +40,7 @@
 			left: {
 				visible: false,
 				title: 'Clicks',
-				mapsTo: 'value',
+				mapsTo: 'clicks',
 				scaleType: ScaleTypes.LINEAR,
 			},
 		},
@@ -53,10 +61,4 @@
 	}
 </script>
 
-<AreaChart
-	data={data.map((d) => ({
-		date: d[0],
-		value: d[1],
-	}))}
-	{options}
-/>
+<AreaChart data={formattedData} {options} />

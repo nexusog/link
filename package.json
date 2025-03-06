@@ -49,7 +49,7 @@
 	},
 	"packageManager": "bun@1.2.2",
 	"dependencies": {
-		"@carbon/charts-svelte": "^1.22.18",
+		"@carbon/charts-svelte": "1.23.0",
 		"@open-draft/until": "^2.1.0",
 		"axios": "^1.7.9",
 		"devalue": "^5.1.1",
