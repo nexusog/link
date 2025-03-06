@@ -7,6 +7,12 @@
 	import { activeWorkspace, activeWorkspaceId, workspaces } from '$lib/store'
 	import { toast } from 'svelte-sonner'
 
+	type Props = {
+		compact?: boolean
+	}
+
+	let { compact = $bindable(false) }: Props = $props()
+
 	let showDialog = $state(false)
 </script>
 
@@ -64,5 +70,8 @@
 </Dialog.Root>
 
 <Button class="w-full" onclick={() => (showDialog = true)}
-	><Upload /> Export Workspace</Button
->
+	><Upload size={compact ? 18 : 20} />
+	{#if compact === false}
+		Export Workspace
+	{/if}
+</Button>

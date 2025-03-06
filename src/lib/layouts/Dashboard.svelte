@@ -251,7 +251,7 @@
 
 		{#if $activeWorkspaceId !== null}
 			<div class="px-4">
-				<ExportWorkspaceButton />
+				<ExportWorkspaceButton compact={!isSidebarOpen} />
 			</div>
 		{/if}
 	</div>
