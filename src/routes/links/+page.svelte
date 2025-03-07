@@ -45,6 +45,7 @@
 	import MiniLinkClicksChart from '$lib/components/MiniLinkClicksChart.svelte'
 	import { transformEngagementsIntoDateCount } from '$lib/utils/transformEngagements'
 	import moment from 'moment'
+	import { CustomEvents, plausible } from '$lib/plausible'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
@@ -56,7 +57,14 @@
 
 	const handleSearchInput = debounce(() => {
 		$activeWorkspaceLinksSearch = searchInputValue
+		plausible.trackEvent(CustomEvents.LINK_SEARCH_INPUT)
 	}, 300)
+
+	$effect(() => {
+		if (showQRCodeDialog) {
+			plausible.trackEvent(CustomEvents.SHOW_LINK_QR_CODE_DIALOG)
+		}
+	})
 
 	async function handleLinkDelete(linkId: string) {
 		try {
@@ -78,9 +86,12 @@
 			}
 
 			$activeWorkspaceLinksCreatedRefCounter--
+
+			plausible.trackEvent(CustomEvents.DELETE_LINK)
 		} catch (e) {
 			console.error(e)
 			toast.error('Something went wrong')
+			plausible.trackEvent(CustomEvents.DELETE_LINK_FAIL)
 		} finally {
 			loadingLinks = loadingLinks.filter((id) => id !== linkId)
 		}
@@ -95,16 +106,19 @@
 			if (event.key === 'c') {
 				event.preventDefault()
 				$isCreateLinkDialogOpen = true
+				plausible.trackEvent(CustomEvents.HOTKEY_C)
 			}
 
 			if (event.key == '/') {
 				event.preventDefault()
 				searchLinksInputRef?.focus()
+				plausible.trackEvent(CustomEvents.HOTKEY_SLASH)
 			}
 
 			if (event.key === 'd') {
 				event.preventDefault()
 				isDisplayDropdownOpen = !isDisplayDropdownOpen
+				plausible.trackEvent(CustomEvents.HOTKEY_D)
 			}
 		}
 
@@ -148,7 +162,12 @@
 				<Select.Root
 					type="single"
 					bind:value={$activeWorkspaceLinksSortBy}
-					onValueChange={() => (isDisplayDropdownOpen = false)}
+					onValueChange={() => {
+						isDisplayDropdownOpen = false
+						plausible.trackEvent(
+							CustomEvents.CHANGE_LINK_DISPLAY_ORDERING,
+						)
+					}}
 				>
 					<Select.Trigger class="w-fit"
 						>{values.find(
@@ -464,6 +483,9 @@
 						{page}
 						onPageChange={(newPageNumber) => {
 							$activeWorkspaceLinksPageNumber = newPageNumber
+							plausible.trackEvent(
+								CustomEvents.LINK_PAGINATION_PAGE_CHANGE,
+							)
 						}}
 						class="items-end"
 					>

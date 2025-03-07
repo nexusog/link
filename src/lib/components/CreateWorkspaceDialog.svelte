@@ -3,6 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
 	import { DEFAULT_API_KEY_LABEL } from '$lib/const'
+	import { CustomEvents, plausible } from '$lib/plausible'
 	import {
 		activeWorkspaceId,
 		isImportWorkspaceDialogOpen,
@@ -36,6 +37,7 @@
 					error?.message ||
 					'Something went wrong',
 			)
+			plausible.trackEvent(CustomEvents.CREATE_WORKSPACE_FAIL)
 			return
 		}
 
@@ -57,6 +59,7 @@
 					apiKeyError?.message ||
 					'Something went wrong',
 			)
+			plausible.trackEvent(CustomEvents.CREATE_WORKSPACE_API_FAIL)
 			return
 		}
 
@@ -75,6 +78,7 @@
 		open = false
 		toast.success('Workspace created successfully')
 		createWorkspaceName = ''
+		plausible.trackEvent(CustomEvents.CREATE_WORKSPACE)
 	}
 </script>
 

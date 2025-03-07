@@ -32,6 +32,7 @@
 	import ImportWorkspaceDialog from '$lib/components/ImportWorkspaceDialog.svelte'
 	import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 	import ExportWorkspaceButton from '$lib/components/ExportWorkspaceButton.svelte'
+	import { CustomEvents, plausible } from '$lib/plausible'
 
 	type Props = {
 		children: Snippet
@@ -64,6 +65,14 @@
 
 	let isSidebarOpen = $state(true)
 	let showWorkspaceSelectorDialog = $state(false)
+
+	$effect(() => {
+		plausible.trackEvent(
+			isSidebarOpen
+				? CustomEvents.EXPAND_SIDEBAR
+				: CustomEvents.COLLAPSE_SIDEBAR,
+		)
+	})
 
 	// if no workspaces, open creation dialog
 	$effect(() => {

@@ -25,6 +25,7 @@
 	import * as api from '$lib/utils/api'
 	import { activeWorkspaceId, isStoreHydrating, workspaces } from '$lib/store'
 	import { DEFAULT_API_KEY_LABEL } from '$lib/const'
+	import { CustomEvents, plausible } from '$lib/plausible'
 
 	let step = $state(0)
 
@@ -53,6 +54,10 @@
 			exactly: 2,
 			join: '-',
 		})
+
+		plausible.trackEvent(
+			CustomEvents.ONBOARDING_USE_INSPIRED_WORKSPACE_NAME,
+		)
 	}
 
 	let workspaceInitLoading = $state(true)
@@ -74,6 +79,8 @@
 
 		$activeWorkspaceId = resultWorkspaceId
 
+		plausible.trackEvent(CustomEvents.ONBOARDING_GO_TO_DASHBOARD)
+
 		setTimeout(() => {
 			$isStoreHydrating = false
 		}, 500)
@@ -94,6 +101,7 @@
 					'Something went wrong',
 			)
 			step--
+			plausible.trackEvent(CustomEvents.ONBOARDING_IMPORT_WORKSPACE_FAIL)
 			return
 		}
 
@@ -102,6 +110,8 @@
 		resultWorkspaceSecret = response.data.data.secret
 
 		workspaceInitLoading = false
+
+		plausible.trackEvent(CustomEvents.ONBOARDING_IMPORT_WORKSPACE)
 	}
 
 	async function handleWorkspaceCreate() {
@@ -116,6 +126,7 @@
 					'Something went wrong',
 			)
 			step--
+			plausible.trackEvent(CustomEvents.ONBOARDING_CREATE_WORKSPACE_FAIL)
 			return
 		}
 
@@ -139,6 +150,7 @@
 					'Something went wrong',
 			)
 			step--
+			plausible.trackEvent(CustomEvents.ONBOARDING_CREATE_API_FAIL)
 			return
 		}
 
@@ -147,6 +159,8 @@
 		resultWorkspaceName = workspaceName
 
 		workspaceInitLoading = false
+
+		plausible.trackEvent(CustomEvents.ONBOARDING_CREATE_WORKSPACE)
 	}
 
 	async function handleWorkspaceInit() {

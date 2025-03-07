@@ -6,6 +6,7 @@
 	import { Input } from '$lib/components/ui/input'
 	import { activeWorkspace, activeWorkspaceId, workspaces } from '$lib/store'
 	import { toast } from 'svelte-sonner'
+	import { CustomEvents, plausible } from '$lib/plausible'
 
 	type Props = {
 		compact?: boolean
@@ -14,6 +15,12 @@
 	let { compact = $bindable(false) }: Props = $props()
 
 	let showDialog = $state(false)
+
+	$effect(() => {
+		if (showDialog) {
+			plausible.trackEvent(CustomEvents.EXPORT_WORKSPACE)
+		}
+	})
 </script>
 
 <Dialog.Root bind:open={showDialog}>

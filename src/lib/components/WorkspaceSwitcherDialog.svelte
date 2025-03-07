@@ -11,12 +11,19 @@
 	import { Plus } from 'lucide-svelte'
 	import { Skeleton } from '$lib/components/ui/skeleton'
 	import * as Tooltip from '$lib/components/ui/tooltip'
+	import { CustomEvents, plausible } from '$lib/plausible'
 
 	type Props = {
 		open: boolean
 	}
 
 	let { open = $bindable(false) }: Props = $props()
+
+	$effect(() => {
+		if (open) {
+			plausible.trackEvent(CustomEvents.OPEN_WORKSPACE_SELECTOR_DIALOG)
+		}
+	})
 </script>
 
 <Dialog.Root bind:open>
@@ -36,6 +43,9 @@
 								if (workspace.isValid === false) return
 								$activeWorkspaceId = workspace.id
 								open = false
+								plausible.trackEvent(
+									CustomEvents.CHANGE_WORKSPACE,
+								)
 							}}
 							class={cn(
 								'relative flex cursor-pointer flex-col rounded border px-3 py-2 text-start transition hover:bg-gray-100',

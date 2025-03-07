@@ -3,6 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog'
 	import { Input } from '$lib/components/ui/input'
 	import { Label } from '$lib/components/ui/label'
+	import { CustomEvents, plausible } from '$lib/plausible'
 	import { activeWorkspaceId, workspaces } from '$lib/store'
 	import * as api from '$lib/utils/api'
 	import { tick } from 'svelte'
@@ -34,6 +35,7 @@
 					error?.message ||
 					'Something went wrong',
 			)
+			plausible.trackEvent(CustomEvents.IMPORT_WORKSPACE_FAIL)
 			return
 		}
 
@@ -60,6 +62,7 @@
 
 		open = false
 		toast.success(`Workspace "${workspaceName}" imported successfully`)
+		plausible.trackEvent(CustomEvents.IMPORT_WORKSPACE)
 	}
 </script>
 

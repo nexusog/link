@@ -18,6 +18,7 @@
 	import { LoaderCircle } from 'lucide-svelte'
 	import { toast } from 'svelte-sonner'
 	import InformativeSwitch from './InformativeSwitch.svelte'
+	import { CustomEvents, plausible } from '$lib/plausible'
 
 	type Props = {
 		open: boolean
@@ -56,6 +57,7 @@
 						error?.message ||
 						'Something went wrong',
 				)
+				plausible.trackEvent(CustomEvents.CREATE_LINK_FAIL)
 				return
 			}
 
@@ -65,6 +67,8 @@
 			values.url = ''
 			values.shortName = ''
 			values.smartEngagementCounting = false
+
+			plausible.trackEvent(CustomEvents.CREATE_LINK)
 		} catch (error) {
 			toast.error('Something went wrong')
 		} finally {
