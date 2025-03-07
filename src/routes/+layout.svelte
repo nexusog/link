@@ -13,6 +13,12 @@
 	import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 	import OnBoardingLayout from '$lib/layouts/OnBoarding.svelte'
 	import { Loader2 } from 'lucide-svelte'
+	import { browser } from '$app/environment'
+	import { plausible } from '$lib/plausible'
+
+	onMount(async () => {
+		plausible.enableAutoPageviews()
+	})
 
 	let { children } = $props()
 
