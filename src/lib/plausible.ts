@@ -52,5 +52,4 @@ export enum CustomEvents {
 export const plausible = Plausible({
 	domain: PUBLIC_PLAUSIBLE_DOMAIN,
 	apiHost: PUBLIC_PLAUSIBLE_HOST_URL,
-	trackLocalhost: true,
 })
