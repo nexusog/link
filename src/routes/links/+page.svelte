@@ -20,6 +20,8 @@
 		ChevronDown,
 		ChevronLeft,
 		ChevronRight,
+		CircleCheck,
+		CircleX,
 		Copy,
 		CornerDownRight,
 		EllipsisVertical,
@@ -46,6 +48,8 @@
 	import { transformEngagementsIntoDateCount } from '$lib/utils/transformEngagements'
 	import moment from 'moment'
 	import { CustomEvents, plausible } from '$lib/plausible'
+	import Tag from '$lib/components/Tag.svelte'
+	import * as Tooltip from '$lib/components/ui/tooltip'
 
 	let isDisplayDropdownOpen = $state(false)
 	let searchInputValue = $state('')
@@ -128,6 +132,29 @@
 			document.removeEventListener('keydown', handleKeyboardShortcut)
 		}
 	})
+
+	async function handleLinkEnableChange(linkId: string, changeTo: boolean) {
+		const { error, data: response } = await api.patchLink(
+			linkId,
+			$activeWorkspaceId!,
+			(await $activeWorkspaceDefaultApiKey)!.key,
+			{
+				enabled: changeTo,
+			},
+		)
+
+		if (error || response?.data.error) {
+			toast.error(
+				error?.response?.data.message ||
+					error?.message ||
+					'Something went wrong',
+			)
+			return
+		}
+
+		$activeWorkspaceLinksCreatedRefCounter++
+		toast.success(`Link ${changeTo ? 'enabled' : 'disabled'}`)
+	}
 </script>
 
 {#snippet LinkFavicon(url: string)}
@@ -187,7 +214,12 @@
 	</div>
 {/snippet}
 
-{#snippet LinkCardMoreOptionsDialogCardContent(linkId: string)}
+{#snippet LinkCardMoreOptionsDialogCardContent(
+	linkId: string,
+	data: {
+		enabled: boolean
+	},
+)}
 	<DropdownMenu.Group>
 		<DropdownMenu.Item
 			onclick={() => {
@@ -197,6 +229,19 @@
 		>
 			<QrCode class="mr-1 size-4" />
 			<span>Show QR Code</span>
+		</DropdownMenu.Item>
+		<DropdownMenu.Item
+			class={cn(data.enabled ? 'text-destructive' : 'text-green-700')}
+			onclick={() => {
+				handleLinkEnableChange(linkId, !data.enabled)
+			}}
+		>
+			{#if data.enabled}
+				<CircleX class="mr-1 size-4" />
+			{:else}
+				<CircleCheck class="mr-1 size-4" />
+			{/if}
+			<span>{data.enabled ? 'Disable' : 'Enable'} Link</span>
 		</DropdownMenu.Item>
 		<DropdownMenu.Item
 			onclick={() => {
@@ -354,7 +399,7 @@
 							</div>
 
 							<div
-								class="flex max-w-full flex-col gap-0 overflow-hidden"
+								class="flex max-w-full flex-col gap-0.5 overflow-hidden"
 							>
 								<div class="flex items-center gap-3">
 									{#if link.title}
@@ -369,6 +414,31 @@
 											{linkHrefWithoutProtocol}
 										</Link>
 									{/if}
+									<div class="flex gap-1">
+										{#if link.smartEngagementCounting}
+											<Tooltip.Provider>
+												<Tooltip.Root>
+													<Tooltip.Trigger>
+														<Tag>SEC</Tag>
+													</Tooltip.Trigger>
+													<Tooltip.Content>
+														<span
+															class="text-brand-700"
+														>
+															Smart Engagement
+															Counting
+														</span> is enabled
+													</Tooltip.Content>
+												</Tooltip.Root>
+											</Tooltip.Provider>
+										{/if}
+										{#if !link.enabled}
+											<Tag
+												class="border-destructive bg-destructive text-destructive-foreground"
+												>Disabled</Tag
+											>
+										{/if}
+									</div>
 								</div>
 								{#if link.title}
 									<div
@@ -464,6 +534,9 @@
 								<DropdownMenu.Content>
 									{@render LinkCardMoreOptionsDialogCardContent(
 										link.id,
+										{
+											enabled: link.enabled,
+										},
 									)}
 								</DropdownMenu.Content>
 							</DropdownMenu.Root>

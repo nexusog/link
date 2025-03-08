@@ -200,3 +200,29 @@ export function deleteLink(
 		}),
 	)
 }
+
+export function patchLink(
+	linkId: string,
+	workspaceId: string,
+	apiKey: string,
+	data: {
+		enabled?: boolean
+		smartEngagementCounting?: boolean
+	},
+) {
+	return until<AxiosError<Response>, AxiosResponse<Response>>(() =>
+		client.patch(
+			`/links/${linkId}`,
+			{
+				enabled: data.enabled,
+				smartEngagementCounting: data.smartEngagementCounting,
+			},
+			{
+				headers: {
+					'x-workspace-id': workspaceId,
+					'x-api-key': apiKey,
+				},
+			},
+		),
+	)
+}
