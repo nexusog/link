@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { PUBLIC_API_BASE_URL } from '$env/static/public'
+import { PUBLIC_SECONDARY_FRONTEND_URL } from '$env/static/public'
 
 export const load: PageServerLoad = (event) => {
 	const { params, url } = event
@@ -9,8 +9,9 @@ export const load: PageServerLoad = (event) => {
 
 	const type = url.searchParams.has('qr') ? 'QR' : 'CLICK'
 
+	// permanent redirect to secondary frontend
 	return redirect(
-		307,
-		`${PUBLIC_API_BASE_URL}/links/${linkId}/redirect?type=${type}`,
+		301,
+		`${PUBLIC_SECONDARY_FRONTEND_URL}/${linkId}${type === 'QR' ? '?qr' : ''}`,
 	)
 }
