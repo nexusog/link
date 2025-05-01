@@ -10,6 +10,7 @@
 		Key,
 		LayoutDashboard,
 		Link,
+		OctagonAlert,
 		PanelRightClose,
 		PanelRightOpen,
 		Plus,
@@ -33,6 +34,8 @@
 	import { isWorkspaceValid } from '$lib/utils/isWorkspaceValid'
 	import ExportWorkspaceButton from '$lib/components/ExportWorkspaceButton.svelte'
 	import { CustomEvents, plausible } from '$lib/plausible'
+	import * as Alert from '$lib/components/ui/alert/index.js'
+	import LinkComponent from '$lib/components/Link.svelte'
 
 	type Props = {
 		children: Snippet
@@ -337,6 +340,23 @@
 				SelectWorkspaceButton,
 			)}
 		{:else}
+			<Alert.Root
+				variant="default"
+				class="mb-6 border border-yellow-600 bg-yellow-500/20 text-yellow-900"
+			>
+				<OctagonAlert class="stroke-yellow-700" size={20} />
+				<Alert.Title>Warning</Alert.Title>
+				<Alert.Description class="mt-1"
+					>The domain <span class="font-bold"
+						>link.nxog.tech will expire on November 30, 2025</span
+					>, and <span class="font-bold">will not be renewed</span>.
+					Please update your links to use the
+					<a href="https://link.henil.dev" class="font-bold"
+						>link.henil.dev</a
+					>
+					domain.</Alert.Description
+				>
+			</Alert.Root>
 			{@render children()}
 		{/if}
 	</div>
