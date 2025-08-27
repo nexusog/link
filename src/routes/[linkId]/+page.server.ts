@@ -12,6 +12,6 @@ export const load: PageServerLoad = (event) => {
 	// permanent redirect to secondary frontend
 	return redirect(
 		301,
-		`${PUBLIC_API_BASE_URL}/${linkId}${type === 'QR' ? '?qr' : ''}`,
+		`${PUBLIC_API_BASE_URL}/links/${linkId}/redirect${type === 'QR' ? '?qr' : ''}`,
 	)
 }
