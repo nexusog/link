@@ -9,9 +9,8 @@ export const load: PageServerLoad = (event) => {
 
 	const type = url.searchParams.has('qr') ? 'QR' : 'CLICK'
 
-	// permanent redirect to secondary frontend
 	return redirect(
-		301,
+		307,
 		`${PUBLIC_API_BASE_URL}/links/${linkId}/redirect${type === 'QR' ? '?qr' : ''}`,
 	)
 }
